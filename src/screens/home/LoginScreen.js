@@ -1,37 +1,64 @@
 import React from 'react';
 import Form from '../../forms/Form';
-import {View, Button, StyleSheet} from 'react-native';
+import {View, Button, StyleSheet, Text} from 'react-native';
 import SignUpScreen from './SignupScreen';
 import ScreenContainer from '@react-navigation/stack';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import {TextInput} from "react-native-paper";
 import Feather from "react-native-vector-icons/Feather";
+import LinearGradient from "react-native-linear-gradient";
 
 const LoginScreen = ({navigation}) => {
-    /*
-    const handleResult = async (result) => {
-        if (result.ok && result.data) {
-            //await setToken(result.data.auth_token);
-            await navigation.navigate('Home');
-        } else if (result.status === 401) {
-            throw new Error('Invalid login.');
+    const [data, setData] = React.useState({
+        email: '',
+        password: '',
+        check_textInputChange: false,
+        secureTextEntry: true
+    })
+    const textInputChange = (val) => {
+        if (val.length !== 0) {
+            setData({
+                ...data,
+                email: val,
+                check_textInputChange: true
+            })
         } else {
-            throw new Error('Something went wrong.');
+            setData({
+                ...data,
+                email: val,
+                check_textInputChange: false
+            })
         }
-    };*/
+    }
     return (
         <View style={styles.container}>
             <View style={styles.header}>
 
             </View>
             <View style={styles.footer}>
+                <Text style={styles.text_header}>Email</Text>
                 <View style={styles.action}>
                     <FontAwesome name="user-o" color='#fff' size={20}/>
                     <TextInput placeholder="Your Email" style={styles.textInput} autoCapitalize="none"/>
-                    <Feather name="check-circle" color="#E57D14" size={3}/>
+                    {data.check_textInputChange ?
+                        <Feather name="check-circle" color="#E57D14" size={3}/>
+                        : null}
+                </View>
+                <Text style={[styles.text_footer, {
+                    marginTop: 35
+                }]}>Password</Text>
+                <View style={styles.action}>
+                    <FontAwesome name="lock" color='#fff' size={20}/>
+                    <TextInput placeholder="Your Password" secureTextEntry={true} style={styles.textInput}
+                               autoCapitalize="none" onChangeText={(val) => textInputChange(val)}/>
+                    <Feather name="eye-off" color="#E57D14" size={3}/>
+                </View>
+                <View>
+                    <LinearGradient colors={['#E57D14', '#cd5900']} style={styles.signIn}>
+                        <Text style={styles.textSign}>Sign In</Text>
+                    </LinearGradient>
                 </View>
                 <Button title="Sign Up!" onPress={() => navigation.push('SignupScreen')}/>
-
             </View>
         </View>
     );
@@ -63,9 +90,31 @@ const styles = StyleSheet.create({
     },
     textInput: {
         flex: 1,
-        marginTop: Platform.OS === 'ios' ? 0 : -12,
+        // marginTop: Platform.OS === 'ios' ? 0 : -12,
         marginLeft: 5,
         paddingLeft: 10,
+        color: '#fff'
+    },
+    text_header: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 30
+    },
+    text_footer: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 30
+    },
+    signIn: {
+        width: '50%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    textSign: {
+        fontSize: 18,
+        fontWeight: 'bold',
         color: '#fff'
     }
 })
