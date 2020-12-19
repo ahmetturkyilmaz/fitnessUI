@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, Text, Button,StyleSheet} from 'react-native';
+import {View, Text, Button, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-const SplashScreen = () =>{
-    return(
-        <View style:{styles.container}>
+
+const SplashScreen = ({navigation}) => {
+    return (
+        <View style={styles.container}>
             <View style={styles.header}>
                 <Text>Header</Text>
             </View>
@@ -35,3 +36,4 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30
     },
 })
+export default SplashScreen;

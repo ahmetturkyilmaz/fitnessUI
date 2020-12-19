@@ -1,9 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native'
-import Form from '../../forms/Form';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import {TextInput} from "react-native-paper";
-import Feather from "react-native-vector-icons/Feather";
 import LinearGradient from "react-native-linear-gradient";
 
 const SignUpScreen = ({navigation}) => {
@@ -17,9 +15,6 @@ const SignUpScreen = ({navigation}) => {
                 <View style={styles.action}>
                     <FontAwesome name="user-o" color='#fff' size={20}/>
                     <TextInput placeholder="Your Email" style={styles.textInput} autoCapitalize="none"/>
-                    {data.check_textInputChange ?
-                        <Feather name="check-circle" color="#E57D14" size={3}/>
-                        : null}
                 </View>
                 <Text style={[styles.text_footer, {
                     marginTop: 35
@@ -27,8 +22,7 @@ const SignUpScreen = ({navigation}) => {
                 <View style={styles.action}>
                     <FontAwesome name="lock" color='#fff' size={20}/>
                     <TextInput placeholder="Your Password" secureTextEntry={true} style={styles.textInput}
-                               autoCapitalize="none" onChangeText={(val) => textInputChange(val)}/>
-                    <Feather name="eye-off" color="#E57D14" size={3}/>
+                               autoCapitalize="none"/>
                 </View>
                 <View>
                     <LinearGradient colors={['#E57D14', '#cd5900']} style={styles.signIn}>

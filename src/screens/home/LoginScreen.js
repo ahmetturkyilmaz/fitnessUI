@@ -1,64 +1,63 @@
 import React from 'react';
 import Form from '../../forms/Form';
-import {View, Button, StyleSheet, Text} from 'react-native';
+import { View, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import SignUpScreen from './SignupScreen';
 import ScreenContainer from '@react-navigation/stack';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import {TextInput} from "react-native-paper";
+import { ActivityIndicator, TextInput } from "react-native-paper";
 import Feather from "react-native-vector-icons/Feather";
 import LinearGradient from "react-native-linear-gradient";
+import { AuthContext } from "../../components/context";
 
-const LoginScreen = ({navigation}) => {
-    const [data, setData] = React.useState({
-        email: '',
-        password: '',
-        check_textInputChange: false,
-        secureTextEntry: true
-    })
-    const textInputChange = (val) => {
-        if (val.length !== 0) {
-            setData({
-                ...data,
-                email: val,
-                check_textInputChange: true
-            })
-        } else {
-            setData({
-                ...data,
-                email: val,
-                check_textInputChange: false
-            })
-        }
-    }
+const LoginScreen = ({ navigation }) => {
+
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
+    const { signIn } = React.useContext(AuthContext);
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-
             </View>
             <View style={styles.footer}>
-                <Text style={styles.text_header}>Email</Text>
+                <Text sFtyle={styles.text_header}>Email</Text>
                 <View style={styles.action}>
-                    <FontAwesome name="user-o" color='#fff' size={20}/>
-                    <TextInput placeholder="Your Email" style={styles.textInput} autoCapitalize="none"/>
-                    {data.check_textInputChange ?
-                        <Feather name="check-circle" color="#E57D14" size={3}/>
-                        : null}
+                    <FontAwesome name="user-o" color='#fff' size={20} />
+                    <TextInput placeholder="Your Email"
+                        style={styles.textInput}
+                        onChangeText={setUsername}
+                        autoCapitalize="none" />
+
                 </View>
-                <Text style={[styles.text_footer, {
-                    marginTop: 35
-                }]}>Password</Text>
+                <Text style={[styles.text_footer, { marginTop: 35 }]}>
+                    Password
+                </Text>
                 <View style={styles.action}>
-                    <FontAwesome name="lock" color='#fff' size={20}/>
-                    <TextInput placeholder="Your Password" secureTextEntry={true} style={styles.textInput}
-                               autoCapitalize="none" onChangeText={(val) => textInputChange(val)}/>
-                    <Feather name="eye-off" color="#E57D14" size={3}/>
+                    <FontAwesome name="lock" color='#fff' size={20} />
+                    <TextInput placeholder="Your Password"
+                        secureTextEntry={true}
+                        style={styles.textInput}
+                        onChangeText={setPassword}
+                        autoCapitalize="none" />
+                    <Feather name="eye-off" color="#E57D14" size={3} />
                 </View>
                 <View>
-                    <LinearGradient colors={['#E57D14', '#cd5900']} style={styles.signIn}>
-                        <Text style={styles.textSign}>Sign In</Text>
-                    </LinearGradient>
+                    <TouchableOpacity
+                        style={styles.signIn}
+                        onPress={() => {
+                            signIn({ username, password })
+                        }}>
+                        <LinearGradient
+                            colors={['#E57D14', '#cd5900']}
+                            style={styles.signIn}>
+                            <Text
+                                style={styles.textSign}>
+                                Sign In
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
                 </View>
-                <Button title="Sign Up!" onPress={() => navigation.push('SignupScreen')}/>
+                <Button title="Sign Up!" onPress={() => navigation.push('SignupScreen')} />
             </View>
         </View>
     );
@@ -116,6 +115,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: '#fff'
+    },
+    indicatorStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 export default LoginScreen;
