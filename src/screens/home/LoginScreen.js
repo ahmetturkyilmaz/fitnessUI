@@ -1,17 +1,17 @@
 import React from 'react';
-import Form from '../../forms/Form';
 import { View, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import SignUpScreen from './SignupScreen';
 import ScreenContainer from '@react-navigation/stack';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { ActivityIndicator, TextInput } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import Feather from "react-native-vector-icons/Feather";
 import LinearGradient from "react-native-linear-gradient";
-import { AuthContext } from "../../components/context";
+import { AuthContext } from '../../components/context';
+import HomeScreen from '../fitness/ProgramScreen';
 
 const LoginScreen = ({ navigation }) => {
 
-    const [username, setUsername] = React.useState('');
+    const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
 
     const { signIn } = React.useContext(AuthContext);
@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
                     <FontAwesome name="user-o" color='#fff' size={20} />
                     <TextInput placeholder="Your Email"
                         style={styles.textInput}
-                        onChangeText={setUsername}
+                        onChangeText={setEmail}
                         autoCapitalize="none" />
 
                 </View>
@@ -45,7 +45,7 @@ const LoginScreen = ({ navigation }) => {
                     <TouchableOpacity
                         style={styles.signIn}
                         onPress={() => {
-                            signIn({ username, password })
+                            signIn({ email, password })
                         }}>
                         <LinearGradient
                             colors={['#E57D14', '#cd5900']}

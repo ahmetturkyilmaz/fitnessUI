@@ -1,35 +1,47 @@
 import React from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native'
+import { View, Text, StyleSheet, Button } from 'react-native'
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import {TextInput} from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import LinearGradient from "react-native-linear-gradient";
 
-const SignUpScreen = ({navigation}) => {
+const SignUpScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
 
             </View>
             <View style={styles.footer}>
+
                 <Text style={styles.text_header}>Email</Text>
+
                 <View style={styles.action}>
-                    <FontAwesome name="user-o" color='#fff' size={20}/>
-                    <TextInput placeholder="Your Email" style={styles.textInput} autoCapitalize="none"/>
+                    <FontAwesome name="user-o" color='#fff' size={20} />
+                    <TextInput placeholder="Your Email" style={styles.textInput} autoCapitalize="none" />
                 </View>
-                <Text style={[styles.text_footer, {
-                    marginTop: 35
-                }]}>Password</Text>
+
+                <Text style={[styles.text_footer, { marginTop: 35 }]}>Username</Text>
+
                 <View style={styles.action}>
-                    <FontAwesome name="lock" color='#fff' size={20}/>
-                    <TextInput placeholder="Your Password" secureTextEntry={true} style={styles.textInput}
-                               autoCapitalize="none"/>
+                    <FontAwesome name="user-o" color='#fff' size={20} />
+                    <TextInput placeholder="Your Email" style={styles.textInput} autoCapitalize="none" />
                 </View>
+
+                <Text style={[styles.text_footer, { marginTop: 35 }]}>Password</Text>
+
+                <View style={styles.action}>
+                    <FontAwesome name="lock" color='#fff' size={20} />
+                    <TextInput placeholder="Your Password"
+                        secureTextEntry={true}
+                        style={styles.textInput}
+                        autoCapitalize="none" />
+                </View>
+
                 <View>
                     <LinearGradient colors={['#E57D14', '#cd5900']} style={styles.signIn}>
-                        <Text style={styles.textSign}>Sign In</Text>
+                        <Text style={styles.textSign}>Sign Up!</Text>
                     </LinearGradient>
                 </View>
-                <Button title="Sign Up!" onPress={() => navigation.push('SignupScreen')}/>
+                
             </View>
         </View>
     );
