@@ -15,6 +15,7 @@ const storeAccessToken = async (value) => {
       if(token !== null) {
         return token;
       }
+
     } catch(e) {
       // error reading value
     }
