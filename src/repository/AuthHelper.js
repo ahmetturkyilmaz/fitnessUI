@@ -18,6 +18,7 @@ const storeAccessToken = async (value) => {
     } catch(e) {
       // error reading value
     }
+
   }
  const removeAccessToken = async () => {
     try {
