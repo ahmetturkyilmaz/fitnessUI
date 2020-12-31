@@ -7,7 +7,8 @@ import { TextInput } from "react-native-paper";
 import Feather from "react-native-vector-icons/Feather";
 import LinearGradient from "react-native-linear-gradient";
 import { AuthContext } from '../../components/context';
-import HomeScreen from '../fitness/ProgramScreen';
+import HomeScreen from '../fitness/programStack/TotalProgramListScreen';
+import InitializeButton from '../../components/InitializeButton';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -41,22 +42,7 @@ const LoginScreen = ({ navigation }) => {
                         autoCapitalize="none" />
                     <Feather name="eye-off" color="#E57D14" size={3} />
                 </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.signIn}
-                        onPress={() => {
-                            signIn({ email, password })
-                        }}>
-                        <LinearGradient
-                            colors={['#E57D14', '#cd5900']}
-                            style={styles.signIn}>
-                            <Text
-                                style={styles.textSign}>
-                                Sign In
-                            </Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </View>
+                <InitializeButton name="signIn" onPress={() => signIn({ email, password })} />
                 <Button title="Sign Up!" onPress={() => navigation.push('SignupScreen')} />
             </View>
         </View>
