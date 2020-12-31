@@ -11,6 +11,7 @@ const storeAccessToken = async (value) => {
   const getAccessToken = async () => {
     try {
       const token = await AsyncStorage.getItem('@accessToken')
+
       if(token !== null) {
         return token;
       }
