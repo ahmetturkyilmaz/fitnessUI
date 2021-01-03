@@ -16,6 +16,8 @@ const LoginScreen = ({ navigation }) => {
     const [password, setPassword] = React.useState('');
 
     const { signIn } = React.useContext(AuthContext);
+
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
