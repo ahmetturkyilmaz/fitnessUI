@@ -42,5 +42,23 @@ const post = async (endpoint, body) => {
       return response.data;
     })
 }
-export {get, post};
+const put = async (endpoint, body) => {
+  const token = await getAccessToken();
+  const headers = {
+    Authorization: 'Bearer ' + token
+  }
+  return Axios
+    .put(
+      `${endpoint}`,
+      body,
+      {
+        headers: headers
+      },
+    )
+    .then((response) => {
+      return response.data;
+    })
+}
+
+export {get, post, put};
 

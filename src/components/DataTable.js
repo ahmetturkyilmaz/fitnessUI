@@ -3,7 +3,7 @@ import {FlatList, Text, TouchableOpacity, SafeAreaView, View, StyleSheet} from '
 import {DataTable} from 'react-native-paper';
 
 
-class DataTable extends React.Component {
+class CustomizableDataTable extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -17,13 +17,17 @@ class DataTable extends React.Component {
       </DataTable.Title>
     )
     const tableData = data.map(data => {
+        console.log("data.name", data.name);
+        console.log("data.name", data.number);
+
+        console.log("data.name", data.sets);
 
         return (
           <DataTable.Row key={data.id}>
-            <DataTable.Cell>data.number</DataTable.Cell>
-            <DataTable.Cell>data.name</DataTable.Cell>
-            <DataTable.Cell>data.sets</DataTable.Cell>
-            {Object.entries(childData).map(([key, value]) => {
+            <DataTable.Cell>{data.number}</DataTable.Cell>
+            <DataTable.Cell>{data.name}</DataTable.Cell>
+            <DataTable.Cell>{data.sets}</DataTable.Cell>
+            {/*            {Object.entries(childData).map(([key, value]) => {
                 return (
                   <>
                     <DataTable.Cell>{key}</DataTable.Cell>
@@ -31,7 +35,7 @@ class DataTable extends React.Component {
                   </>
                 )
               }
-            )}
+            )}*/}
           </DataTable.Row>
         )
       }
@@ -42,11 +46,21 @@ class DataTable extends React.Component {
           <DataTable.Header>
             {tableTitles}
           </DataTable.Header>
+          {tableData}
 
+          <DataTable.Pagination
+            page={1}
+            numberOfPages={3}
+            onPageChange={page => {
+              console.log(page);
+            }}
+            label="1-2 of 6"
+          />
         </DataTable>
       </View>
     );
   }
 
 }
-export default DataTable;
+
+export default CustomizableDataTable;

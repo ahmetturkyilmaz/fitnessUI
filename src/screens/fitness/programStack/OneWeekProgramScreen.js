@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, Text, TouchableOpacity, SafeAreaView, View, StyleSheet} from 'react-native';
+import { Text, TouchableOpacity, SafeAreaView, View, StyleSheet} from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
 import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {totalPrograms, weeklyPrograms} from '../../../repository/program/program';
-import DataTable from "../../../components/DataTable";
+import CustomizableDataTable from "../../../components/DataTable";
 
 
 const OneWeekProgramScreen = ({route, navigation}) => {
@@ -45,7 +45,6 @@ const OneWeekProgramScreen = ({route, navigation}) => {
   }, [allWeeklyPrograms])
 
   const dataToRender = (dayOfWeek) => {
-    console.log("dayofweek", dayOfWeek)
     if (allWeeklyPrograms && allWeeklyPrograms.length > 0) {
       let programOfDay;
       let oneWeekProgram = allWeeklyPrograms[0];
@@ -54,11 +53,9 @@ const OneWeekProgramScreen = ({route, navigation}) => {
       for (let oneDayProgram of dailyPrograms) {
         if (oneDayProgram.dayOfWeek === dayOfWeek) {
           programOfDay = oneDayProgram;
-          console.log("programOfDay", programOfDay)
         }
       }
       if (typeof programOfDay !== 'undefined' && typeof programOfDay.moveSet !== 'undefined') {
-        console.log("PROGRAMMMM", programOfDay.moveSet)
         return programOfDay.moveSet
       }
     }
@@ -117,14 +114,17 @@ const OneWeekProgramScreen = ({route, navigation}) => {
         transition="backgroundColor"
         style={{backgroundColor: (isActive ? 'rgba(255,255,255,1)' : 'rgba(245,252,255,1)')}}>
         {section.content.length > 0 ?
-          <Animatable.Text
-            duration={300}
-            easing="ease-out"
-            animation={isActive ? 'zoomIn' : null}>
-          <DataTable data={section.content} >
-
-          </DataTable>
-          </Animatable.Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("EditDailyProgramScreen", {
+              dailyProgram: section.content
+            })}>
+            <Animatable.Text
+              duration={300}
+              easing="ease-out"
+              animation={isActive ? 'zoomIn' : null}>
+              <CustomizableDataTable data={section.content} titles={["no", "name", "sets"]}/>
+            </Animatable.Text>
+          </TouchableOpacity>
           :
           <Icon.Button name="plus-circle" size={30} color="#900"
                        onPress={() => {
@@ -136,8 +136,9 @@ const OneWeekProgramScreen = ({route, navigation}) => {
   }
 
   const updateSections = activeSections => {
-    setActiveSections(activeSections);
-  };
+      setActiveSections(activeSections);
+    }
+  ;
 
   return (
     <SafeAreaView>
@@ -152,8 +153,10 @@ const OneWeekProgramScreen = ({route, navigation}) => {
   )
 }
 
-const styles = StyleSheet.create({
-    content: {},
+const styles = StyleSheet.create(
+  {
+    content: {}
+    ,
     headerText: {}
   }
 )
