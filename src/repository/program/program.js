@@ -8,11 +8,17 @@ const urls = {
   dailyPrograms: baseUrl + "/daily-program"
 }
 const totalPrograms = {
-  getAll: async (params) => {
-    return get(urls.totalPrograms, params);
+  getAll: async () => {
+    return get(urls.totalPrograms);
+  },
+  getById: async (id) => {
+    return get(urls.totalPrograms + '/' + {id})
   },
   post: async (body) => {
     return post(urls.totalPrograms, body)
+  },
+  put: async (body) => {
+    return put(urls.totalPrograms, body)
   }
 }
 const weeklyPrograms = {

@@ -12,9 +12,7 @@ const TotalProgramListScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     totalPrograms
-      .getAll({
-        isLazyLoading: false
-      })
+      .getAll()
       .then(data => {
         if (data !== null) {
           console.log(data);
