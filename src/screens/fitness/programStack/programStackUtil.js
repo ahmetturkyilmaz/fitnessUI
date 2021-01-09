@@ -2,7 +2,7 @@ const getMoveSetByDay = (allWeeklyPrograms, dayOfWeek) => {
   if (allWeeklyPrograms && allWeeklyPrograms.length > 0) {
     let programOfDay;
     let oneWeekProgram = allWeeklyPrograms[0];
-    let dailyPrograms = oneWeekProgram.dailyProgram;
+    let dailyPrograms = oneWeekProgram.dailyPrograms;
 
     for (let oneDayProgram of dailyPrograms) {
       if (oneDayProgram.dayOfWeek === dayOfWeek) {
@@ -14,6 +14,20 @@ const getMoveSetByDay = (allWeeklyPrograms, dayOfWeek) => {
     }
   }
   return [];
+}
+const updateMoveSetByDay = (totalProgram, dayOfWeek, newMoveSet) => {
+  let programOfDay;
+  console.log("**",totalProgram.weeklyPrograms)
+  let oneWeekProgram = totalProgram.weeklyPrograms[0];
+  let dailyPrograms = oneWeekProgram.dailyPrograms;
+
+  for (let oneDayProgram of dailyPrograms) {
+    if (oneDayProgram.dayOfWeek === dayOfWeek) {
+      programOfDay = oneDayProgram;
+    }
+  }
+  programOfDay.moveSet = newMoveSet
+  return totalProgram;
 }
 const initializingTotalProgramData = {
   programName: "New Program",
@@ -44,10 +58,7 @@ const initializingTotalProgramData = {
         dayOfWeek: "SUNDAY",
       }]
     },
-
-
   ]
-
 }
 
-export {getMoveSetByDay,initializingTotalProgramData};
+export {getMoveSetByDay, initializingTotalProgramData, updateMoveSetByDay};

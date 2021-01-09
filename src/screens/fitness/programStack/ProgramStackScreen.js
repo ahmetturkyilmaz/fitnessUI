@@ -14,7 +14,7 @@ const ProgramStackScreen = ({navigation}) => (
     <ProgramStack.Screen name="TotalProgramList" component={TotalProgramListScreen} navigation={navigation}/>
     <ProgramStack.Screen name="OneWeekProgramScreen" component={OneWeekProgramScreen} navigation={navigation}/>
     <ProgramStack.Screen name="EditDailyProgramScreen" component={EditDailyProgramScreen} navigation={navigation}/>
-    <ProgramStack.Screen name="ProgramStackScreen" component ={EditMappingScreen} navigation={navigation}/>
+    <ProgramStack.Screen name="EditMappingScreen" component ={EditMappingScreen} navigation={navigation}/>
   </ProgramStack.Navigator>
 )
 export default ProgramStackScreen;

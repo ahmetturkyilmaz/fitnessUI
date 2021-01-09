@@ -23,8 +23,8 @@ class CustomizableDataTable extends React.Component {
         console.log("data.name", data.sets);
 
         return (
-          <DataTable.Row key={data.id}>
-            <DataTable.Cell>{data.number}</DataTable.Cell>
+          <DataTable.Row key={data.moveNumber}>
+            <DataTable.Cell>{data.moveNumber}</DataTable.Cell>
             <DataTable.Cell>{data.name}</DataTable.Cell>
             <DataTable.Cell>{data.sets}</DataTable.Cell>
             {/*            {Object.entries(childData).map(([key, value]) => {

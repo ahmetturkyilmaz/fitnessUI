@@ -12,7 +12,7 @@ const totalPrograms = {
     return get(urls.totalPrograms);
   },
   getById: async (id) => {
-    return get(urls.totalPrograms + '/' + {id})
+    return get(urls.totalPrograms + '/' + id)
   },
   post: async (body) => {
     return post(urls.totalPrograms, body)

@@ -4,7 +4,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {totalPrograms} from '../../../repository/program/program';
-import CustomizableDataTable from "../../../components/DataTable";
+import CustomizableDataTable from "../../../components/CustomizableDataTable";
 import {getMoveSetByDay, initializingTotalProgramData} from "./programStackUtil";
 
 
@@ -27,7 +27,10 @@ const OneWeekProgramScreen = ({route, navigation}) => {
       setCurrentTotalProgram(totalProgram);
       setAllWeeklyProgram(totalProgram.weeklyPrograms)
     }
-  }, [])
+    if (route.params?.newTotalProgram){
+      setCurrentTotalProgram(route.params?.newTotalProgram);
+    }
+  }, [route.params?.newTotalProgram])
 
 
   const SECTIONS = [
@@ -82,7 +85,7 @@ const OneWeekProgramScreen = ({route, navigation}) => {
         duration={300}
         transition="backgroundColor"
         style={{backgroundColor: (isActive ? 'rgba(255,255,255,1)' : 'rgba(245,252,255,1)')}}>
-        {section.content.length > 0 ?
+        {section.content !== null ?
           <TouchableOpacity
             onPress={() => onPressSection(navigation, currentTotalProgram, section.title, section.content)}>
             <Animatable.Text
@@ -94,7 +97,7 @@ const OneWeekProgramScreen = ({route, navigation}) => {
           </TouchableOpacity>
           :
           <Icon.Button name="plus-circle" size={30} color="#900"
-                       onPress={() => onPressSection(navigation, currentTotalProgram, section.title, null)}/>
+                       onPress={() => onPressSection(navigation, currentTotalProgram, section.title, [])}/>
         }
       </Animatable.View>
     );
@@ -103,9 +106,10 @@ const OneWeekProgramScreen = ({route, navigation}) => {
     navigation.navigate("EditDailyProgramScreen", {
       totalProgram: currentTotalProgram,
       day: day,
-      moveSet: content
+      moveSet: content,
     })
   }
+
   const updateSections = activeSections => {
     setActiveSections(activeSections);
   }
