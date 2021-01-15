@@ -1,104 +1,145 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native'
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { TextInput } from "react-native-paper";
-import LinearGradient from "react-native-linear-gradient";
+import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {TextInput} from 'react-native-paper';
+import LinearGradient from 'react-native-linear-gradient';
 
-const SignUpScreen = ({ navigation }) => {
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-
-            </View>
-            <View style={styles.footer}>
-
-                <Text style={styles.text_header}>Email</Text>
-
-                <View style={styles.action}>
-                    <FontAwesome name="user-o" color='#fff' size={20} />
-                    <TextInput placeholder="Your Email" style={styles.textInput} autoCapitalize="none" />
-                </View>
-
-                <Text style={[styles.text_footer, { marginTop: 35 }]}>Username</Text>
-
-                <View style={styles.action}>
-                    <FontAwesome name="user-o" color='#fff' size={20} />
-                    <TextInput placeholder="Your Email" style={styles.textInput} autoCapitalize="none" />
-                </View>
-
-                <Text style={[styles.text_footer, { marginTop: 35 }]}>Password</Text>
-
-                <View style={styles.action}>
-                    <FontAwesome name="lock" color='#fff' size={20} />
-                    <TextInput placeholder="Your Password"
-                        secureTextEntry={true}
-                        style={styles.textInput}
-                        autoCapitalize="none" />
-                </View>
-
-                <View>
-                    <LinearGradient colors={['#E57D14', '#cd5900']} style={styles.signIn}>
-                        <Text style={styles.textSign}>Sign Up!</Text>
-                    </LinearGradient>
-                </View>
-                
-            </View>
+const SignUpScreen = () => {
+  return (
+    <View style={styles.container}>
+      <ScrollView style={styles.footer}>
+        <Text style={styles.text_header}>E-Mail</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.prefix}>
+            <FontAwesome name="user-o" color="#000" size={20}/>
+          </Text>
+          <TextInput
+            placeholder="Enter your e-mail here.."
+            autoCapitalize="none"
+            style={styles.textInput}
+          />
         </View>
-    );
+        <Text style={styles.text_header}>Name</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.prefix}>
+            <FontAwesome name="user-o" color="#000" size={20}/>
+          </Text>
+          <TextInput
+            placeholder="Enter your Name here.."
+            autoCapitalize="none"
+            style={styles.textInput}
+          />
+        </View>
+        <Text style={styles.text_header}>Surname</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.prefix}>
+            <FontAwesome name="user-o" color="#000" size={20}/>
+          </Text>
+          <TextInput
+            placeholder="Enter your Surname here.."
+            autoCapitalize="none"
+            style={styles.textInput}
+          />
+        </View>
+        <Text style={styles.text_header}>Password</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.prefix}>
+            <FontAwesome name="lock" color="#000" size={20}/>
+          </Text>
+          <TextInput
+            placeholder="Enter your password here.."
+            secureTextEntry={true}
+            autoCapitalize="none"
+            style={styles.textInput}/>
+        </View>
+
+        <View style={styles.button}>
+          <LinearGradient colors={['#E57D14', '#cd5900']} style={styles.signIn}>
+            <Text style={styles.textSign}>Sign Up!</Text>
+          </LinearGradient>
+        </View>
+      </ScrollView>
+    </View>
+  );
 };
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#E57D14'
-    },
-    header: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    footer: {
-        flex: 2,
-        backgroundColor: '#000',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        paddingVertical: 50,
-        paddingHorizontal: 30
-    },
-    action: {
-        flexDirection: 'row',
-        marginTop: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#fff',
-        paddingBottom: 5
-    },
-    textInput: {
-        flex: 1,
-        // marginTop: Platform.OS === 'ios' ? 0 : -12,
-        marginLeft: 5,
-        paddingLeft: 10,
-        color: '#fff'
-    },
-    text_header: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 30
-    },
-    text_footer: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 30
-    },
-    signIn: {
-        width: '50%',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10
-    },
-    textSign: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#fff'
-    }
-})
+  textInput: {
+    height: 35,
+    width: "100%",
+    margin: 15,
+    borderWidth: 1,
+    backgroundColor: 'white',
+    borderColor: "white"
+
+  },
+
+  button: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  inputContainer: {
+    height: 40,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginHorizontal: 5,
+    borderRadius: 5,
+
+  },
+  prefix: {
+    width: "13%",
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#E57D14',
+  },
+  header: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footer: {
+    flex: 2,
+    backgroundColor: '#000',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingVertical: 50,
+    paddingHorizontal: 30,
+  },
+  text_header: {
+    color: '#fff',
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    marginTop: 20,
+  },
+  text_footer: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 30,
+  },
+  signIn: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  textSign: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  logo: {
+    width: '100%',
+    height: '100%',
+  },
+});
 export default SignUpScreen;

@@ -1,51 +1,75 @@
 import React from 'react';
-import {View, Button, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import SignUpScreen from './SignupScreen';
-import ScreenContainer from '@react-navigation/stack';
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import {TextInput} from "react-native-paper";
-import Feather from "react-native-vector-icons/Feather";
-import LinearGradient from "react-native-linear-gradient";
+import {View, StyleSheet, Text, Image, ScrollView} from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {TextInput} from 'react-native-paper';
 import {AuthContext} from '../../components/context';
-import HomeScreen from '../fitness/programStack/TotalProgramListScreen';
 import InitializeButton from '../../components/InitializeButton';
-
+import logo from '../../assets/images/logo2.jpeg';
+import Animated, { Easing } from 'react-native-reanimated';
+const {
+  Value,
+  event,
+  block,
+  cond,
+  eq,
+  set,
+  Clock,
+  startClock,
+  stopClock,
+  debug,
+  timing,
+  clockRunning,
+  interpolate,
+  Extrapolate
+} = Animated;
 const LoginScreen = ({navigation}) => {
-
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-
   const {signIn} = React.useContext(AuthContext);
-
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-      </View>
-      <View style={styles.footer}>
-        <Text sFtyle={styles.text_header}>Email</Text>
-        <View style={styles.action}>
-          <FontAwesome name="user-o" color='#fff' size={20}/>
-          <TextInput placeholder="Your Email"
-                     style={styles.textInput}
-                     onChangeText={setEmail}
-                     autoCapitalize="none"/>
 
+      <Animated.View style={styles.header}>
+        <Image style={styles.logo} source={logo} resizeMode="contain" />
+      </Animated.View>
+      <View style={styles.footer}>
+        <Text style={styles.text_header}>Email</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.prefix}>
+            <FontAwesome name="user-o" color="#000" size={20} />
+          </Text>
+          <TextInput
+            placeholder="Enter your e-mail here.."
+            onChangeText={setEmail}
+            style={styles.textInput}
+            autoCapitalize="none"
+          />
         </View>
-        <Text style={[styles.text_footer, {marginTop: 35}]}>
-          Password
-        </Text>
-        <View style={styles.action}>
-          <FontAwesome name="lock" color='#fff' size={20}/>
-          <TextInput placeholder="Your Password"
-                     secureTextEntry={true}
-                     style={styles.textInput}
-                     onChangeText={setPassword}
-                     autoCapitalize="none"/>
-          <Feather name="eye-off" color="#E57D14" size={3}/>
+
+        <Text style={styles.text_header}>Password</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.prefix}>
+            <FontAwesome name="lock" color="#000" size={20} />
+          </Text>
+          <TextInput
+            placeholder="Enter your password here.."
+            secureTextEntry={true}
+            style={styles.textInput}
+            onChangeText={setPassword}
+            autoCapitalize="none"
+          />
         </View>
-        <InitializeButton name="signIn" onPress={() => signIn({email, password})}/>
-        <Button title="Sign Up!" onPress={() => navigation.push('SignupScreen')}/>
+        <InitializeButton
+          name="Sign In!"
+          onPress={() => signIn({email, password})}
+          style={styles.button}
+        />
+        <InitializeButton
+          name="Sign Up!"
+          style={styles.button}
+          onPress={() => navigation.push('SignupScreen')}
+        />
       </View>
     </View>
   );
@@ -53,61 +77,81 @@ const LoginScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E57D14'
+    backgroundColor: '#fa9449',
+    justifyContent: 'flex-end'
   },
+  textInput: {
+    height: 35,
+    width: "100%",
+    margin: 15,
+    borderWidth: 1,
+    backgroundColor: 'white',
+    borderColor: "white"
+
+  },
+  button: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  inputContainer: {
+    height: 40,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginHorizontal: 5,
+    borderRadius: 5,
+
+  },
+  prefix: {
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+
   header: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   footer: {
     flex: 2,
     backgroundColor: '#000',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingVertical: 50,
-    paddingHorizontal: 30
-  },
-  action: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#fff',
-    paddingBottom: 5
-  },
-  textInput: {
-    flex: 1,
-    // marginTop: Platform.OS === 'ios' ? 0 : -12,
-    marginLeft: 5,
-    paddingLeft: 10,
-    color: '#fff'
+    paddingVertical: 10,
+    paddingHorizontal: 30,
   },
   text_header: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 30
+    paddingHorizontal: 10,
+    marginTop: 20,
   },
   text_footer: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 30
+    fontSize: 30,
   },
   signIn: {
     width: '50%',
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10
+    borderRadius: 10,
   },
   textSign: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff'
+    color: '#fff',
   },
-  indicatorStyle: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})
+  logo: {
+    width: '100%',
+    height: '100%',
+  },
+});
 export default LoginScreen;

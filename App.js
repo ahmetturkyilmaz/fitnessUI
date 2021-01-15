@@ -1,16 +1,13 @@
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {Text, View, Button, ActivityIndicator, Alert} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { View,  ActivityIndicator, Alert} from 'react-native';
 
 import RootStackScreen from "./src/screens/home/RootStackScreen";
 import FitnessStackScreen from "./src/screens/fitness/FitnessStackScreen"
 import {AuthContext} from "./src/components/context";
 import {storeAccessToken, getAccessToken, removeAccessToken} from "./src/repository/AuthHelper"
 import {getAuth} from './src/repository/auth/user';
-import asyncStorage from './src/repository/AuthHelper';
 
-const Stack = createStackNavigator();
 
 export default function App() {
   const [state, dispatch] = React.useReducer(
@@ -101,6 +98,5 @@ export default function App() {
         }
       </NavigationContainer>
     </AuthContext.Provider>
-
   );
 }
