@@ -4,8 +4,7 @@ import {get, post, put} from "../network";
 const baseUrl = 'http://192.168.0.19:9086/api/programs'
 const urls = {
   totalPrograms: baseUrl + "/total-program",
-  weeklyPrograms: baseUrl + "/weekly-program",
-  dailyPrograms: baseUrl + "/daily-program"
+  moves: baseUrl + "/move",
 }
 const totalPrograms = {
   getAll: async () => {
@@ -21,21 +20,15 @@ const totalPrograms = {
     return put(urls.totalPrograms, body)
   }
 }
-const weeklyPrograms = {
-  getAllByTotalProgramId: async (id) => {
-    return get(urls.weeklyPrograms + "/" + id);
-  }
-}
-const dailyPrograms = {
-  getAllByWeeklyProgramId: async (id) => {
-    return get(urls.dailyPrograms + "/" + id);
+const moveEntity = {
+  getMoveById: async (id) => {
+    return get(urls.moves + "/" + id);
   },
   post: async (body) => {
-    return post(urls.dailyPrograms, body);
+    return post(urls.moves, body);
   },
   put: async (body) => {
-    return put(urls.dailyPrograms, body);
+    return put(urls.moves, body);
   }
-
 }
-export {totalPrograms, weeklyPrograms};
+export {totalPrograms};

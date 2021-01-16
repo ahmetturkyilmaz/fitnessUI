@@ -13,17 +13,19 @@ const OneWeekProgramScreen = ({route, navigation}) => {
   const [allWeeklyPrograms, setAllWeeklyProgram] = useState({});
   const [activeSections, setActiveSections] = useState([2, 0]);
   const [currentTotalProgram, setCurrentTotalProgram] = useState();
+
   useEffect(() => {
     if (totalProgram == null) {
       console.log("totalProgram null")
       totalPrograms
-        .post(initializingTotalProgramData).then(data => {
+        .post(initializingTotalProgramData)
+        .then(data => {
         console.log(data)
         setCurrentTotalProgram(data);
         setAllWeeklyProgram(data.weeklyPrograms)
       })
     } else {
-      console.log("totalProgram not null")
+      console.log("totalProgram not null",totalProgram)
       setCurrentTotalProgram(totalProgram);
       setAllWeeklyProgram(totalProgram.weeklyPrograms)
     }
@@ -129,8 +131,7 @@ const OneWeekProgramScreen = ({route, navigation}) => {
 
 const styles = StyleSheet.create(
   {
-    content: {}
-    ,
+    content: {},
     headerText: {}
   }
 )

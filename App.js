@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import { View,  ActivityIndicator, Alert} from 'react-native';
+import {View, ActivityIndicator, Alert} from 'react-native';
 
 import RootStackScreen from "./src/screens/home/RootStackScreen";
 import FitnessStackScreen from "./src/screens/fitness/FitnessStackScreen"
 import {AuthContext} from "./src/components/context";
 import {storeAccessToken, getAccessToken, removeAccessToken} from "./src/repository/AuthHelper"
-import {getAuth} from './src/repository/auth/user';
+import {getAuth, postAuth} from './src/repository/auth/user';
 
 
 export default function App() {
@@ -79,10 +79,17 @@ export default function App() {
         dispatch({type: 'SIGN_OUT'})
       },
       signUp: async data => {
-        dispatch({type: 'SIGN_UP', token: 'dummy-auth-token'});
+        postAuth(data.email, data.name, data.surname, data.password)
+          .then(response => response.data)
+          .then(response => {
+            console.log(response.message);
+          })
+          .catch(error => {
+            console.log('error', error.message);
+          })
       },
     }),
-    [state.userToken]
+    []
   );
   return (
     <AuthContext.Provider value={authContext}>

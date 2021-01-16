@@ -1,10 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {TextInput} from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
+import InitializeButton from "../../components/InitializeButton";
+import {AuthContext} from "../../components/context";
 
-const SignUpScreen = () => {
+const SignUpScreen = ({navigation}) => {
+  const [email, setEmail] = useState();
+  const [name, setName] = useState();
+  const [surname, setSurname] = useState();
+  const [password, setPassword] = useState();
+  const {signUp} = React.useContext(AuthContext);
+
+  const onPressSignUpButton = () => {
+    signUp({email, name, surname, password}).then(response => {
+        navigation.goBack();
+      }
+    )
+  }
   return (
     <View style={styles.container}>
       <ScrollView style={styles.footer}>
@@ -17,6 +31,7 @@ const SignUpScreen = () => {
             placeholder="Enter your e-mail here.."
             autoCapitalize="none"
             style={styles.textInput}
+            onChangeText={setEmail}
           />
         </View>
         <Text style={styles.text_header}>Name</Text>
@@ -28,6 +43,7 @@ const SignUpScreen = () => {
             placeholder="Enter your Name here.."
             autoCapitalize="none"
             style={styles.textInput}
+            onChangeText={setName}
           />
         </View>
         <Text style={styles.text_header}>Surname</Text>
@@ -39,6 +55,7 @@ const SignUpScreen = () => {
             placeholder="Enter your Surname here.."
             autoCapitalize="none"
             style={styles.textInput}
+            onChangeText={setSurname}
           />
         </View>
         <Text style={styles.text_header}>Password</Text>
@@ -50,14 +67,14 @@ const SignUpScreen = () => {
             placeholder="Enter your password here.."
             secureTextEntry={true}
             autoCapitalize="none"
+            onChangeText={setPassword}
             style={styles.textInput}/>
         </View>
-
-        <View style={styles.button}>
-          <LinearGradient colors={['#E57D14', '#cd5900']} style={styles.signIn}>
-            <Text style={styles.textSign}>Sign Up!</Text>
-          </LinearGradient>
-        </View>
+        <InitializeButton
+          name="Sign Up!"
+          style={styles.button}
+          onPress={() => onPressSignUpButton()}
+        />
       </ScrollView>
     </View>
   );

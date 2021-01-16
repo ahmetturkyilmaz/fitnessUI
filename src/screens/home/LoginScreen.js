@@ -5,34 +5,18 @@ import {TextInput} from 'react-native-paper';
 import {AuthContext} from '../../components/context';
 import InitializeButton from '../../components/InitializeButton';
 import logo from '../../assets/images/logo2.jpeg';
-import Animated, { Easing } from 'react-native-reanimated';
-const {
-  Value,
-  event,
-  block,
-  cond,
-  eq,
-  set,
-  Clock,
-  startClock,
-  stopClock,
-  debug,
-  timing,
-  clockRunning,
-  interpolate,
-  Extrapolate
-} = Animated;
+
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+
   const {signIn} = React.useContext(AuthContext);
 
   return (
     <View style={styles.container}>
-
-      <Animated.View style={styles.header}>
+      <View style={styles.header}>
         <Image style={styles.logo} source={logo} resizeMode="contain" />
-      </Animated.View>
+      </View>
       <View style={styles.footer}>
         <Text style={styles.text_header}>Email</Text>
         <View style={styles.inputContainer}>
@@ -75,11 +59,6 @@ const LoginScreen = ({navigation}) => {
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fa9449',
-    justifyContent: 'flex-end'
-  },
   textInput: {
     height: 35,
     width: "100%",
@@ -112,7 +91,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
   },
-
+  container: {
+    flex: 1,
+    backgroundColor: '#fa9449',
+  },
   header: {
     flex: 1,
     justifyContent: 'center',

@@ -72,10 +72,8 @@ const DailyProgramInputCard = (props) => {
       <ScrollView>
         {moveSets}
         <TouchableOpacity>
-          <Icon.Button name="plus-circle" size={30} color="#900"
-                       onPress={() => onPressAddNewMoveButton()}/>
+          <Icon.Button name="plus-circle" size={30} color="#900" onPress={() => onPressAddNewMoveButton()}/>
         </TouchableOpacity>
-
       </ScrollView>
     </SafeAreaView>
 
