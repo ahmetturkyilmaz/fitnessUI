@@ -1,7 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, Text, TouchableOpacity, SafeAreaView, View, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  View,
+  StyleSheet,
+} from 'react-native';
 import {DataTable} from 'react-native-paper';
-
 
 class CustomizableDataTable extends React.Component {
   constructor(props) {
@@ -11,23 +17,16 @@ class CustomizableDataTable extends React.Component {
   render() {
     const {data, titles, childData} = this.props;
 
-    const tableTitles = titles.map((title) =>
-      <DataTable.Title key={title}>
-        {title}
-      </DataTable.Title>
-    )
-    const tableData = data.map(data => {
-        console.log("data.name", data.name);
-        console.log("data.name", data.number);
+    const tableTitles = titles.map((title) => (
+      <DataTable.Title key={title}>{title}</DataTable.Title>
+    ));
+    const tableData = data.map((data) => {
 
-        console.log("data.name", data.sets);
-
-        return (
-          <DataTable.Row key={data.moveNumber}>
-            <DataTable.Cell>{data.moveNumber}</DataTable.Cell>
-            <DataTable.Cell>{data.name}</DataTable.Cell>
-            <DataTable.Cell>{data.sets}</DataTable.Cell>
-            {/*            {Object.entries(childData).map(([key, value]) => {
+      return (
+        <DataTable.Row key={data.moveNumber}>
+          <DataTable.Cell>{data.name}</DataTable.Cell>
+          <DataTable.Cell>{data.sets}</DataTable.Cell>
+          {/*            {Object.entries(childData).map(([key, value]) => {
                 return (
                   <>
                     <DataTable.Cell>{key}</DataTable.Cell>
@@ -36,22 +35,19 @@ class CustomizableDataTable extends React.Component {
                 )
               }
             )}*/}
-          </DataTable.Row>
-        )
-      }
-    );
+        </DataTable.Row>
+      );
+    });
     return (
       <View>
         <DataTable>
-          <DataTable.Header>
-            {tableTitles}
-          </DataTable.Header>
+          <DataTable.Header>{tableTitles}</DataTable.Header>
           {tableData}
 
           <DataTable.Pagination
             page={1}
             numberOfPages={3}
-            onPageChange={page => {
+            onPageChange={(page) => {
               console.log(page);
             }}
             label="1-2 of 6"
@@ -60,7 +56,6 @@ class CustomizableDataTable extends React.Component {
       </View>
     );
   }
-
 }
 
 export default CustomizableDataTable;

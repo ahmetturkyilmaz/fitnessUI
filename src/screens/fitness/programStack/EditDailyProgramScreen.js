@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from "react-native";
-import {Button} from "react-native-paper";
-import {totalPrograms} from "../../../repository/program/program";
-import {updateMoveSetByDay} from "./programStackUtil";
-import DailyProgramInputCard from "../../../components/DailyProgramInputCard";
+import {StyleSheet, View, Button as RNButton} from 'react-native';
+
+import {totalPrograms} from '../../../repository/program/program';
+import {updateMoveSetByDay} from './programStackUtil';
+import DailyProgramInputCard from '../../../components/DailyProgramInputCard';
 
 const EditDailyProgramScreen = ({route, navigation}) => {
   const {moveSet, day, totalProgram} = route.params;
@@ -11,44 +11,53 @@ const EditDailyProgramScreen = ({route, navigation}) => {
   const [currentMoveSet, setCurrentMoveSet] = useState([]);
 
   useEffect(() => {
-    console.log("totalprogram editdailyprogram", totalProgram)
-    console.log("totalprogram moveSet", moveSet)
     setCurrentTotalProgram(totalProgram);
     if (moveSet !== null) {
-      console.log("gelir", currentMoveSet)
       setCurrentMoveSet(moveSet);
     }
-  }, [])
+  }, []);
 
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onPressSaveButton = () => {
-    console.log("*****", currentMoveSet)
-    let newTotalProgram = updateMoveSetByDay(currentTotalProgram, day, currentMoveSet);
+    let newTotalProgram = updateMoveSetByDay(
+      currentTotalProgram,
+      day,
+      currentMoveSet,
+    );
     setCurrentTotalProgram(newTotalProgram);
-    totalPrograms.put(currentTotalProgram)
-      .then(r => totalPrograms
-        .getById(r)
-        .then(payload => {
-          setCurrentTotalProgram(payload)
-        })).then(
-      navigation.navigate("OneWeekProgramScreen",
-        {newTotalProgram: currentTotalProgram}))
+    totalPrograms
+      .put(currentTotalProgram)
+      .then((r) => totalPrograms.getById(r))
+      .then((payload) => {
+        navigation.navigate('OneWeekProgramScreen', {
+          newTotalProgram: payload,
+        });
+      });
+  };
 
-  }
-
-
-  console.log("currentMoveSet", currentMoveSet)
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <RNButton
+          onPress={() => {
+            onPressSaveButton();
+          }}
+          title="Save"
+        />
+      ),
+    });
+  }, [navigation, onPressSaveButton]);
 
   return (
     <View>
-      <Button onPress={() => onPressSaveButton()} mode="contained"/>
-      <DailyProgramInputCard moveSet={moveSet} onMoveSetChanged={(input) => {
-        setCurrentMoveSet(input)
-      }}/>
-
-
+      <DailyProgramInputCard
+        moveSet={moveSet}
+        onMoveSetChanged={(input) => {
+          setCurrentMoveSet(input);
+        }}
+      />
     </View>
-  )
-}
-const styles = StyleSheet.create({})
+  );
+};
+const styles = StyleSheet.create({});
 export default EditDailyProgramScreen;
