@@ -1,6 +1,6 @@
 import Axios from 'axios';
 
-const baseUrl = 'https://85a6e4b9050f.ngrok.io/api/auth';
+const baseUrl = '192.168.0.19:9090/api/auth';
 
 export const getAuth = (email, password) => {
   return Axios.post(baseUrl + '/signin', {email: email, password: password});
