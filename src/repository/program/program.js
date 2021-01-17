@@ -1,6 +1,6 @@
 import {get, post, put} from '../network';
 
-const baseUrl = '192.168.0.19:9086/api/programs';
+const baseUrl = 'http://192.168.0.19:9086/api/programs';
 const urls = {
   totalPrograms: baseUrl + '/total-program',
   moves: baseUrl + '/move',
