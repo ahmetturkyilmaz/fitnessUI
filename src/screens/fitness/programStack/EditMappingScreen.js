@@ -2,11 +2,11 @@ import React, {useState, useEffect} from "react";
 import {View, Text, TextInput} from "react-native";
 
 const EditMappingScreen = ({route, navigation}) => {
-  const {setRepMap} = route.params;
+  const {data} = route.params;
   const [currentMap, setCurrentMap] = useState()
   useEffect(() => {
-    if (setRepMap !== 'undefined') {
-      setCurrentMap(setRepMap)
+    if (data.setRepWeightMap !== 'undefined') {
+      setCurrentMap(data.setRepWeightMap)
     } else {
       setCurrentMap({1: {rep: 0, weight: 0,}})
     }

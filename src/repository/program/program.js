@@ -19,7 +19,7 @@ const totalPrograms = {
     return put(urls.totalPrograms, body);
   },
 };
-const moveEntity = {
+const moves = {
   getMoveById: async (id) => {
     return get(urls.moves + '/' + id);
   },
@@ -30,4 +30,4 @@ const moveEntity = {
     return put(urls.moves, body);
   },
 };
-export {totalPrograms};
+export {totalPrograms,moves};

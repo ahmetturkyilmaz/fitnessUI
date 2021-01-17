@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {Card, Title, Button, TextInput} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useRoute} from '@react-navigation/native';
 
@@ -17,6 +18,8 @@ const DailyProgramInputCard = (props) => {
   const [buttonDisabled, isButtonDisabled] = useState(true);
   const [currentSetRepWeightMap, setCurrentSetRepWeightMap] = useState();
   const route = useRoute();
+  const navigation = useNavigation();
+
   useEffect(() => {
     console.log('olması gereken', currentMoveSet);
     setCurrentMoveSet(props.moveSet);
@@ -84,6 +87,7 @@ const DailyProgramInputCard = (props) => {
       </Card.Content>
       <Card.Actions>
         <Button onPress={() => onPressRemoveButton()}>Remove</Button>
+        <Button onPress={() => navigation.navigate("EditMappingScreen", {data: data})}>Edit Reps And Weights</Button>
       </Card.Actions>
     </Card>
   ));
