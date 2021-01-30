@@ -83,7 +83,7 @@ const DailyProgramInputCard = (props) => {
         />
       </Card.Content>
       <Card.Actions>
-        <Button onPress={() => onPressRemoveButton()}>Remove</Button>
+        <Button onPress={() => onPressRemoveButton(data.moveNumber)}>Remove</Button>
       </Card.Actions>
     </Card>
   ));

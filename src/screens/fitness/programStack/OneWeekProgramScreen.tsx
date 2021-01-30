@@ -7,13 +7,13 @@ import {
 } from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
 import * as Animatable from 'react-native-animatable';
-import {totalPrograms} from '../../../repository/program/program';
+import {totalProgramsNetwork} from '../../../repository/program/program';
 import CustomizableDataTable from '../../../components/CustomizableDataTable';
 import {
   getMoveSetByDay,
-  initializingTotalProgramData,
 } from './programStackUtil';
 import {Button, DefaultTheme} from 'react-native-paper';
+import {initializingTotalProgramData} from "../../../model/DefaultProgram";
 
 const OneWeekProgramScreen = ({route, navigation}) => {
   const {totalProgram} = route.params;
@@ -24,7 +24,7 @@ const OneWeekProgramScreen = ({route, navigation}) => {
   useEffect(() => {
     if (totalProgram == null) {
       console.log('totalProgram null');
-      totalPrograms.post(initializingTotalProgramData).then((data) => {
+      totalProgramsNetwork.post(initializingTotalProgramData).then((data) => {
         console.log(data);
         setCurrentTotalProgram(data);
         setAllWeeklyProgram(data.weeklyPrograms);
@@ -71,7 +71,7 @@ const OneWeekProgramScreen = ({route, navigation}) => {
   ];
 
   const renderSectionTitle = (section) => {
-    return <View style={styles.content} />;
+    return <View style={styles.content}/>;
   };
 
   const renderHeader = (section, index, isActive, sections) => {

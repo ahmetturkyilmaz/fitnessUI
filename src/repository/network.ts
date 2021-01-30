@@ -1,6 +1,5 @@
 import Axios from 'axios';
 import {getAccessToken, removeAccessToken} from "./AuthHelper";
-import {useNavigation} from "@react-navigation/core";
 
 const get = async (endpoint, params) => {
   const token = await getAccessToken();

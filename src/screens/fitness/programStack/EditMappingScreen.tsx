@@ -8,7 +8,7 @@ const EditMappingScreen = ({route, navigation}) => {
     if (setRepMap !== 'undefined') {
       setCurrentMap(setRepMap)
     } else {
-      setCurrentMap({1: {rep: 0, weight: 0,}})
+      setCurrentMap({1: {rep: 0, weight: 0}})
     }
   }, [])
   const renderItem = (key, value) => (

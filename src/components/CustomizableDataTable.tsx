@@ -10,6 +10,7 @@ import {
 import {DataTable} from 'react-native-paper';
 
 class CustomizableDataTable extends React.Component {
+  props: { data: any; titles: any; childData: any; };
   constructor(props) {
     super(props);
   }

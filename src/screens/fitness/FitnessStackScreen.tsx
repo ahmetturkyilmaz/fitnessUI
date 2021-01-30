@@ -13,7 +13,6 @@ const RootStackScreen = ({navigation}) => {
       <Tab.Screen
         name="Programs"
         component={ProgramStack}
-        navigation={navigation}
         options={{
           tabBarLabel: 'Programs',
           tabBarIcon: ({color}) => (
@@ -28,7 +27,6 @@ const RootStackScreen = ({navigation}) => {
       <Tab.Screen
         name="Calorie Calculator"
         component={SplashScreen}
-        navigation={navigation}
         options={{
           tabBarLabel: 'Calorie Calculator',
           tabBarIcon: ({color}) => (

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Button as RNButton} from 'react-native';
 
-import {totalPrograms} from '../../../repository/program/program';
+import {totalProgramsNetwork} from '../../../repository/program/program';
 import {updateMoveSetByDay} from './programStackUtil';
 import DailyProgramInputCard from '../../../components/DailyProgramInputCard';
 
@@ -25,9 +25,9 @@ const EditDailyProgramScreen = ({route, navigation}) => {
       currentMoveSet,
     );
     setCurrentTotalProgram(newTotalProgram);
-    totalPrograms
+    totalProgramsNetwork
       .put(currentTotalProgram)
-      .then((r) => totalPrograms.getById(r))
+      .then((r) => totalProgramsNetwork.getById(r))
       .then((payload) => {
         navigation.navigate('OneWeekProgramScreen', {
           newTotalProgram: payload,

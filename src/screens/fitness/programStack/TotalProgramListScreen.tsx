@@ -8,15 +8,17 @@ import {
 } from 'react-native';
 import {AuthContext} from '../../../components/context';
 import {FAB} from 'react-native-paper';
-import {totalPrograms} from '../../../repository/program/program';
+import {totalProgramsNetwork} from '../../../repository/program/program';
+import {TotalProgram} from "../../../model/TotalProgram";
 
 const TotalProgramListScreen = ({navigation}) => {
+  const totalPrograms:TotalProgram = {};
   const {signOut} = useContext(AuthContext);
   const [programList, setProgramList] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    totalPrograms
+    totalProgramsNetwork
       .getAll()
       .then((data) => {
         setProgramList(data);
@@ -27,9 +29,9 @@ const TotalProgramListScreen = ({navigation}) => {
       });
   }, []);
 
-  const onPress = (item) => {
+  const onPress = (totalProgram:TotalProgram) => {
     navigation.navigate('OneWeekProgramScreen', {
-      totalProgram: item,
+      totalProgram: totalProgram,
     });
   };
 
@@ -39,10 +41,10 @@ const TotalProgramListScreen = ({navigation}) => {
       <FlatList
         style={styles.list}
         data={programList}
-        renderItem={({item, style}) => (
+        renderItem={({item}) => (
           <TouchableOpacity
             onPress={() => onPress(item)}
-            style={[styles.item, style]}>
+            style={[styles.item]}>
             <Text style={styles.title}>{item.programName}</Text>
           </TouchableOpacity>
         )}
