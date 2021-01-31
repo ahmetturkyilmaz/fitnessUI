@@ -7,7 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const Tab = createMaterialBottomTabNavigator();
 
-const RootStackScreen = ({navigation}) => {
+const RootStackScreen = () => {
   return (
     <Tab.Navigator barStyle={{backgroundColor: DefaultTheme.colors.primary}}>
       <Tab.Screen

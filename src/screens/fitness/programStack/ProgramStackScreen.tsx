@@ -4,34 +4,38 @@ import TotalProgramListScreen from './TotalProgramListScreen';
 import OneWeekProgramScreen from './OneWeekProgramScreen';
 import EditDailyProgramScreen from './EditDailyProgramScreen';
 import EditMappingScreen from './EditMappingScreen';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-const ProgramStack = createStackNavigator();
+type ProgramStackParamsList = {
+  TotalProgramList: {};
+  OneWeekProgramScreen: {};
+  EditDailyProgramScreen: {};
+  EditMappingScreen: {};
+};
 
-const ProgramStackScreen = ({navigation}) => (
-  <ProgramStack.Navigator>
+const ProgramStack = createStackNavigator<ProgramStackParamsList>();
+
+const ProgramStackScreen = () => (
+  <ProgramStack.Navigator initialRouteName="TotalProgramList">
     <ProgramStack.Screen
       name="TotalProgramList"
       options={{title: 'Programs'}}
       component={TotalProgramListScreen}
-      navigation={navigation}
     />
     <ProgramStack.Screen
       name="OneWeekProgramScreen"
       options={{title: 'Weekly Program'}}
       component={OneWeekProgramScreen}
-      navigation={navigation}
     />
     <ProgramStack.Screen
       name="EditDailyProgramScreen"
       options={{title: 'Daily Program'}}
       component={EditDailyProgramScreen}
-      navigation={navigation}
     />
     <ProgramStack.Screen
       options={{title: 'Edit'}}
       name="EditMappingScreen"
       component={EditMappingScreen}
-      navigation={navigation}
     />
   </ProgramStack.Navigator>
 );

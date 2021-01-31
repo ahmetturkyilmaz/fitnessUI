@@ -17,7 +17,6 @@ const EditDailyProgramScreen = ({route, navigation}) => {
     }
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onPressSaveButton = () => {
     let newTotalProgram = updateMoveSetByDay(
       currentTotalProgram,

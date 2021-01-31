@@ -1,7 +1,6 @@
 import React from 'react';
-import {validateEmail, validatePassword} from "../forms/Validation";
-import {Button, View} from "react-native";
-import {TextInput, Portal, Dialog, Paragraph, Title} from "react-native-paper";
+import {Button, View} from 'react-native';
+import {TextInput, Portal, Dialog, Paragraph, Title} from 'react-native-paper';
 
 export const LoginDialog = (props) => {
   const [visible, setVisible] = React.useState(false);
@@ -20,11 +19,12 @@ export const LoginDialog = (props) => {
             <Paragraph>{props.errorMessageSecond}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={hideDialog}>Done</Button>
+            <Button onPress={hideDialog} title={'done'}>
+              Done
+            </Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
     </View>
-  )
-
-}
+  );
+};

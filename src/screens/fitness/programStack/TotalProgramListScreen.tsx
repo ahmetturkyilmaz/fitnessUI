@@ -9,12 +9,11 @@ import {
 import {AuthContext} from '../../../components/context';
 import {FAB} from 'react-native-paper';
 import {totalProgramsNetwork} from '../../../repository/program/program';
-import {TotalProgram} from "../../../model/TotalProgram";
+import {TotalProgram} from '../../../types/TotalProgram';
 
-const TotalProgramListScreen = ({navigation}) => {
-  const totalPrograms:TotalProgram = {};
+const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
   const {signOut} = useContext(AuthContext);
-  const [programList, setProgramList] = useState();
+  const [programList, setProgramList] = useState<TotalProgram[]>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,12 +23,12 @@ const TotalProgramListScreen = ({navigation}) => {
         setProgramList(data);
       })
       .finally(() => {
-        console.log(programList)
-        setLoading(false)
+        console.log(programList);
+        setLoading(false);
       });
   }, []);
 
-  const onPress = (totalProgram:TotalProgram) => {
+  const onPress = (totalProgram: TotalProgram) => {
     navigation.navigate('OneWeekProgramScreen', {
       totalProgram: totalProgram,
     });
@@ -42,17 +41,15 @@ const TotalProgramListScreen = ({navigation}) => {
         style={styles.list}
         data={programList}
         renderItem={({item}) => (
-          <TouchableOpacity
-            onPress={() => onPress(item)}
-            style={[styles.item]}>
+          <TouchableOpacity onPress={() => onPress(item)} style={[styles.item]}>
             <Text style={styles.title}>{item.programName}</Text>
           </TouchableOpacity>
         )}
-        keyExtractor={(item) => `key = ${item.id}`}
+        keyExtractor={(item: any) => `key = ${item.id}`}
       />
       <FAB
         style={styles.fab}
-        small
+        small={true}
         icon="plus"
         onPress={() => {
           navigation.navigate('OneWeekProgramScreen', {
@@ -60,7 +57,7 @@ const TotalProgramListScreen = ({navigation}) => {
           });
         }}
       />
-      <FAB style={styles.signOut} small icon="logout" onPress={signOut}/>
+      <FAB style={styles.signOut} small icon="logout" onPress={signOut} />
     </SafeAreaView>
   );
 };

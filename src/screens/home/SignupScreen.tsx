@@ -2,18 +2,24 @@ import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet} from 'react-native';
 import {Button, TextInput, Title} from 'react-native-paper';
 import {AuthContext} from '../../components/context';
+import {SignupRequest} from '../../types/auth/SignupRequest';
 
 const SignUpScreen = ({navigation}) => {
-  const [email, setEmail] = useState();
-  const [name, setName] = useState();
-  const [surname, setSurname] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState<string>();
+  const [name, setName] = useState<string>();
+  const [surname, setSurname] = useState<string>();
+  const [password, setPassword] = useState<string>();
   const {signUp} = React.useContext(AuthContext);
 
   const onPressSignUpButton = () => {
-    signUp({email, name, surname, password}).then((response) => {
-      navigation.goBack();
-    });
+    const authConcept: SignupRequest = {
+      email: email,
+      name: name,
+      surname: surname,
+      password: password,
+    };
+    signUp(authConcept);
+    navigation.goBack();
   };
   return (
     <SafeAreaView style={styles.container}>

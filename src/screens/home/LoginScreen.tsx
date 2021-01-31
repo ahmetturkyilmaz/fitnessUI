@@ -3,13 +3,18 @@ import {View, StyleSheet, Image} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import {AuthContext} from '../../components/context';
 import logo from '../../assets/images/logo.png';
+import {IAuthContext} from '../../types/auth/IAuthContext';
+import {LoginRequest} from '../../types/auth/LoginRequest';
 
-const LoginScreen = ({navigation}) => {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+const LoginScreen = ({navigation}: {navigation: any}) => {
+  const [email, setEmail] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
 
-  const {signIn} = React.useContext(AuthContext);
-
+  const {signIn} = React.useContext<IAuthContext>(AuthContext);
+  const onPressLoginButton = () => {
+    const authConcept: LoginRequest = {email: email, password: password};
+    signIn(authConcept);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -31,7 +36,7 @@ const LoginScreen = ({navigation}) => {
 
         <Button
           mode="contained"
-          onPress={() => signIn({email, password})}
+          onPress={() => onPressLoginButton()}
           style={{marginTop: 24}}>
           SIGN IN
         </Button>
@@ -46,16 +51,12 @@ const LoginScreen = ({navigation}) => {
   );
 };
 const styles = StyleSheet.create({
-  container: {
-  },
-
+  container: {},
   header: {},
-
   logo: {
     width: '100%',
     height: 320,
   },
-
   content: {
     paddingHorizontal: 24,
     paddingTop: 24,
@@ -139,6 +140,6 @@ const styles = StyleSheet.create({
   //   fontSize: 18,
   //   fontWeight: 'bold',
   //   color: '#fff',
-  // },
+  // }
 });
 export default LoginScreen;

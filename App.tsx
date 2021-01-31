@@ -11,15 +11,13 @@ import {
   removeAccessToken,
 } from './src/repository/AuthHelper';
 import {getAuth, postAuth} from './src/repository/auth/user';
-import {AuthConcept} from "./src/model/auth/AuthConcept";
+import {LoginRequest} from './src/types/auth/LoginRequest';
+import {IAuthContext} from './src/types/auth/IAuthContext';
+import {JWTResponse} from './src/types/auth/JWTResponse';
 
 export default function App() {
-  type ACTIONTYPE =
-    | { type: "prevState"; payload: number }
-    | { type: "payload"; payload: string };
-
   const [state, dispatch] = React.useReducer(
-    (prevState, payload) => {
+    (prevState: any, payload: any) => {
       switch (payload.type) {
         case 'RESTORE_TOKEN':
           return {
@@ -48,63 +46,57 @@ export default function App() {
     },
   );
 
-
   React.useEffect(() => {
     const bootstrapAsync = async () => {
       let userToken;
       try {
         userToken = await getAccessToken();
-      } catch (error) {
-      }
+      } catch (error) {}
       dispatch({type: 'RESTORE_TOKEN', token: userToken});
     };
     bootstrapAsync();
   }, []);
 
-  const authContext = React.useMemo(
+  const authContext = React.useMemo<IAuthContext>(
     () => ({
       getToken: () => state.userToken,
-      signIn: async (authContext: AuthConcept) => {
-        getAuth(authContext)
-          .then((response) => response.data)
-          .then((response) => {
-            console.log(response);
-            storeAccessToken(response.accessToken);
-            dispatch({type: 'SIGN_IN', token: response.accessToken});
-          })
-          .catch((error) => {
-            console.log('error', error.message);
-          });
+
+      signIn: async (authContext: LoginRequest): Promise<JWTResponse> => {
+        return getAuth(authContext).then((response) => {
+          console.log(response);
+          storeAccessToken(response.accessToken);
+          dispatch({type: 'SIGN_IN', token: response.accessToken});
+          return response;
+        });
       },
+
       signOut: () => {
         removeAccessToken();
         dispatch({type: 'SIGN_OUT'});
       },
-      signUp: async (authContext: AuthConcept) => {
-        return postAuth(authContext)
-          .then((response) => response.data)
-          .then((response) => {
-            console.log(response.message);
-          })
-          .catch((error) => {
-            console.log('error', error.message);
-          });
+
+      signUp: async (authContext: LoginRequest): Promise<string> => {
+        return postAuth(authContext).then((response) => {
+          console.log(response);
+          return response;
+        });
       },
     }),
     [state.userToken],
   );
+
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         {state.isLoading ? (
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size="large"/>
+            <ActivityIndicator size="large" />
           </View>
         ) : state.userToken != null ? (
-          <FitnessStackScreen name="FitnessStackScreen"/>
+          <FitnessStackScreen />
         ) : (
-          <RootStackScreen name="RootStackScreen"/>
+          <RootStackScreen />
         )}
       </NavigationContainer>
     </AuthContext.Provider>

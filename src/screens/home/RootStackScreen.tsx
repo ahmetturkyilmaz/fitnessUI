@@ -1,23 +1,15 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './LoginScreen';
-import SignupScreen from './SignupScreen';
+import SignUpScreen from './SignupScreen';
 
 const RootStack = createStackNavigator();
 
-const RootStackScreen = ({navigation}) => {
+const RootStackScreen = () => {
   return (
     <RootStack.Navigator headerMode="none">
-      <RootStack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        navigation={navigation}
-      />
-      <RootStack.Screen
-        name="SignupScreen"
-        component={SignUpScreen}
-        navigation={navigation}
-      />
+      <RootStack.Screen name="LoginScreen" component={LoginScreen} />
+      <RootStack.Screen name="SignupScreen" component={SignUpScreen} />
     </RootStack.Navigator>
   );
 };

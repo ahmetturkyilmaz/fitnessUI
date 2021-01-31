@@ -10,7 +10,8 @@ import {
 import {DataTable} from 'react-native-paper';
 
 class CustomizableDataTable extends React.Component {
-  props: { data: any; titles: any; childData: any; };
+  props: {data: any; titles: any; childData?: any};
+
   constructor(props) {
     super(props);
   }
@@ -22,7 +23,6 @@ class CustomizableDataTable extends React.Component {
       <DataTable.Title key={title}>{title}</DataTable.Title>
     ));
     const tableData = data.map((data) => {
-
       return (
         <DataTable.Row key={data.moveNumber}>
           <DataTable.Cell>{data.name}</DataTable.Cell>

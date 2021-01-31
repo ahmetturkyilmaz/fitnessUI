@@ -1,23 +1,23 @@
-import React, {useState, useEffect} from 'react';
-import {
-  Text,
-  SafeAreaView,
-  View,
-  StyleSheet,
-} from 'react-native';
+import React, {Props, useEffect, useState} from 'react';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
 import * as Animatable from 'react-native-animatable';
 import {totalProgramsNetwork} from '../../../repository/program/program';
 import CustomizableDataTable from '../../../components/CustomizableDataTable';
-import {
-  getMoveSetByDay,
-} from './programStackUtil';
+import {getMoveSetByDay} from './programStackUtil';
 import {Button, DefaultTheme} from 'react-native-paper';
-import {initializingTotalProgramData} from "../../../model/DefaultProgram";
+import {initializingTotalProgramData} from '../../../types/DefaultProgram';
+import {DayOfWeek} from '../../../types/enum/DayOfWeek';
 
-const OneWeekProgramScreen = ({route, navigation}) => {
+const OneWeekProgramScreen = ({
+  route,
+  navigation,
+}: {
+  route: any;
+  navigation: any;
+}) => {
   const {totalProgram} = route.params;
-  const [allWeeklyPrograms, setAllWeeklyProgram] = useState({});
+  const [allWeeklyPrograms, setAllWeeklyProgram] = useState([]);
   const [activeSections, setActiveSections] = useState([0]);
   const [currentTotalProgram, setCurrentTotalProgram] = useState();
 
@@ -41,40 +41,45 @@ const OneWeekProgramScreen = ({route, navigation}) => {
 
   const SECTIONS = [
     {
-      title: 'MONDAY',
-      content: getMoveSetByDay(allWeeklyPrograms, 'MONDAY'),
+      title: DayOfWeek.MONDAY,
+      content: getMoveSetByDay(allWeeklyPrograms, DayOfWeek.MONDAY),
     },
     {
-      title: 'TUESDAY',
-      content: getMoveSetByDay(allWeeklyPrograms, 'TUESDAY'),
+      title: DayOfWeek.THURSDAY,
+      content: getMoveSetByDay(allWeeklyPrograms, DayOfWeek.THURSDAY),
     },
     {
-      title: 'WEDNESDAY',
-      content: getMoveSetByDay(allWeeklyPrograms, 'WEDNESDAY'),
+      title: DayOfWeek.WEDNESDAY,
+      content: getMoveSetByDay(allWeeklyPrograms, DayOfWeek.WEDNESDAY),
     },
     {
-      title: 'THURSDAY',
-      content: getMoveSetByDay(allWeeklyPrograms, 'THURSDAY'),
+      title: DayOfWeek.THURSDAY,
+      content: getMoveSetByDay(allWeeklyPrograms, DayOfWeek.THURSDAY),
     },
     {
-      title: 'FRIDAY',
-      content: getMoveSetByDay(allWeeklyPrograms, 'FRIDAY'),
+      title: DayOfWeek.FRIDAY,
+      content: getMoveSetByDay(allWeeklyPrograms, DayOfWeek.FRIDAY),
     },
     {
-      title: 'SATURDAY',
-      content: getMoveSetByDay(allWeeklyPrograms, 'SATURDAY'),
+      title: DayOfWeek.SATURDAY,
+      content: getMoveSetByDay(allWeeklyPrograms, DayOfWeek.SATURDAY),
     },
     {
-      title: 'SUNDAY',
-      content: getMoveSetByDay(allWeeklyPrograms, 'SUNDAY'),
+      title: DayOfWeek.SUNDAY,
+      content: getMoveSetByDay(allWeeklyPrograms, DayOfWeek.SUNDAY),
     },
   ];
 
-  const renderSectionTitle = (section) => {
-    return <View style={styles.content}/>;
+  const renderSectionTitle = (section: any) => {
+    return <View style={styles.content} />;
   };
 
-  const renderHeader = (section, index, isActive, sections) => {
+  const renderHeader = (
+    section: any,
+    index: string | number,
+    isActive: boolean | string,
+    sections?: any,
+  ) => {
     return (
       <Animatable.View
         duration={300}
@@ -101,7 +106,12 @@ const OneWeekProgramScreen = ({route, navigation}) => {
     );
   };
 
-  const renderContent = (section, i, isActive, sections) => {
+  const renderContent = (
+    section: any,
+    index: string | number,
+    isActive: boolean | string,
+    sections?: any,
+  ) => {
     return (
       <Animatable.View
         duration={300}
@@ -136,7 +146,7 @@ const OneWeekProgramScreen = ({route, navigation}) => {
       </Animatable.View>
     );
   };
-  const onPressSection = (day, content) => {
+  const onPressSection = (day: DayOfWeek, content: any) => {
     navigation.navigate('EditDailyProgramScreen', {
       totalProgram: currentTotalProgram,
       day: day,
@@ -144,7 +154,7 @@ const OneWeekProgramScreen = ({route, navigation}) => {
     });
   };
 
-  const updateSections = (item) => {
+  const updateSections = (item: any) => {
     setActiveSections(item);
   };
 
