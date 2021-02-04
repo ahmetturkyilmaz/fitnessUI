@@ -9,7 +9,7 @@ import {
 import {AuthContext} from '../../../components/context';
 import {FAB} from 'react-native-paper';
 import {totalProgramsNetwork} from '../../../repository/program/program';
-import {TotalProgram} from '../../../types/TotalProgram';
+import {TotalProgram} from '../../../types/program/TotalProgram';
 
 const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
   const {signOut} = useContext(AuthContext);

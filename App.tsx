@@ -1,7 +1,9 @@
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {View, ActivityIndicator, Alert} from 'react-native';
-
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import store from './store';
 import RootStackScreen from './src/screens/home/RootStackScreen';
 import FitnessStackScreen from './src/screens/fitness/FitnessStackScreen';
 import {AuthContext} from './src/components/context';

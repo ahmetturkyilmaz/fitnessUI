@@ -1,5 +1,5 @@
 import {RepWeight} from './RepWeight';
-import {MoveType} from './enum/MoveType';
+import {MoveType} from '../enum/MoveType';
 
 export interface MoveSet {
   _id?: string;
@@ -7,7 +7,7 @@ export interface MoveSet {
   moveNumber?: number;
   moveType?: MoveType;
   sets?: number;
-  setRepWeightMap?: Record<number, RepWeight>;
+  setRepWeightMap?: {[key: string]: RepWeight};
   time?: number;
   createdAt?: number;
   createdBy?: string;

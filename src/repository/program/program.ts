@@ -1,6 +1,6 @@
 import {get, post, put} from '../network';
-import {TotalProgram} from '../../types/TotalProgram';
-import {MoveSet} from '../../types/MoveSet';
+import {TotalProgram} from '../../types/program/TotalProgram';
+import {MoveSet} from '../../types/program/MoveSet';
 
 const baseUrl = 'http://192.168.0.19:9086/api/programs';
 const urls = {

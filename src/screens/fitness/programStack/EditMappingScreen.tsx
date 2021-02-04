@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TextInput} from 'react-native';
-import {RepWeight} from '../../../types/RepWeight';
+import {RepWeight} from '../../../types/program/RepWeight';
 
 const EditMappingScreen = ({
   route,
@@ -10,7 +10,7 @@ const EditMappingScreen = ({
   navigation: any;
 }) => {
   const {setRepMap} = route.params;
-  const [currentMap, setCurrentMap] = useState<Record<number, RepWeight>>();
+  const [currentMap, setCurrentMap] = useState<Map<number, RepWeight>>();
   useEffect(() => {
     if (setRepMap !== 'undefined') {
       setCurrentMap(setRepMap);
@@ -18,19 +18,21 @@ const EditMappingScreen = ({
       setCurrentMap({1: {rep: 0, weight: 0}});
     }
   }, []);
-  const renderItem = (key: number, value: RepWeight) => (
-    <View key={key.toString()}>
-      <Text>Set {key}</Text>
-      <TextInput
-        placeholder={value.rep.toString()}
-        onChangeText={(text) => onChangeField(text, key, 'rep')}
-      />
-      <TextInput
-        placeholder={value.weight.toString()}
-        onChangeText={(text) => onChangeField(text, key, 'weight')}
-      />
-    </View>
-  );
+  const renderItem = (key: number, value: RepWeight) => {
+    return (
+      <View key={key.toString()}>
+        <Text>Set {key}</Text>
+        <TextInput
+          placeholder={value.rep.toString()}
+          onChangeText={(text) => onChangeField(text, key, 'rep')}
+        />
+        <TextInput
+          placeholder={value.weight.toString()}
+          onChangeText={(text) => onChangeField(text, key, 'weight')}
+        />
+      </View>
+    );
+  };
   const onChangeField = (text: string, key: number, type: string) => {
     let newMap = currentMap;
     let val;
@@ -47,14 +49,12 @@ const EditMappingScreen = ({
     newMap.set(key, val);
     setCurrentMap(newMap);
   };
+  const items = () =>
+    currentMap?.forEach((value, key) => {
+      return renderItem(key, value);
+    });
 
-  return (
-    <View>
-      {currentMap.map((key, value) => {
-        return renderItem(key, value);
-      })}
-    </View>
-  );
+  return <View>{items()}</View>;
 };
 
 export default EditMappingScreen;

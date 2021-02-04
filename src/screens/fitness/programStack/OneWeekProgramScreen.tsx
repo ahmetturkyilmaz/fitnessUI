@@ -6,7 +6,7 @@ import {totalProgramsNetwork} from '../../../repository/program/program';
 import CustomizableDataTable from '../../../components/CustomizableDataTable';
 import {getMoveSetByDay} from './programStackUtil';
 import {Button, DefaultTheme} from 'react-native-paper';
-import {initializingTotalProgramData} from '../../../types/DefaultProgram';
+import {initializingTotalProgramData} from '../../../types/program/DefaultProgram';
 import {DayOfWeek} from '../../../types/enum/DayOfWeek';
 
 const OneWeekProgramScreen = ({

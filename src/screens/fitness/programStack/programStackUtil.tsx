@@ -1,8 +1,8 @@
-import {TotalProgram} from '../../../types/TotalProgram';
-import {WeeklyProgram} from '../../../types/WeeklyProgram';
-import {DailyProgram} from '../../../types/DailyProgram';
+import {TotalProgram} from '../../../types/program/TotalProgram';
+import {WeeklyProgram} from '../../../types/program/WeeklyProgram';
+import {DailyProgram} from '../../../types/program/DailyProgram';
 import {DayOfWeek} from '../../../types/enum/DayOfWeek';
-import {MoveSet} from '../../../types/MoveSet';
+import {MoveSet} from '../../../types/program/MoveSet';
 
 const getMoveSetByDay = (
   allWeeklyPrograms: WeeklyProgram[],
