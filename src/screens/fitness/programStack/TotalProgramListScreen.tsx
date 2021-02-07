@@ -10,21 +10,29 @@ import {AuthContext} from '../../../components/context';
 import {FAB} from 'react-native-paper';
 import {totalProgramsNetwork} from '../../../repository/program/program';
 import {TotalProgram} from '../../../types/program/TotalProgram';
+import {useDispatch, useSelector} from 'react-redux';
+import {setTotalProgramList} from '../../../redux/program';
+import {IStore} from '../../../redux';
+import {setLoading} from '../../../redux/core';
 
 const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
   const {signOut} = useContext(AuthContext);
-  const [programList, setProgramList] = useState<TotalProgram[]>();
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const totalProgramList = useSelector<IStore, TotalProgram[]>(
+    (state) => state.program.totalProgramList,
+  );
+  const loading = useSelector<IStore>((state) => state.core.loading);
 
   useEffect(() => {
+    dispatch(setLoading(true));
     totalProgramsNetwork
       .getAll()
       .then((data) => {
-        setProgramList(data);
+        dispatch(setTotalProgramList(data));
       })
       .finally(() => {
-        console.log(programList);
-        setLoading(false);
+        console.log(totalProgramList);
+        dispatch(setLoading(false));
       });
   }, []);
 
@@ -39,7 +47,7 @@ const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
       {loading && <Text style={styles.loading}>loading...</Text>}
       <FlatList
         style={styles.list}
-        data={programList}
+        data={totalProgramList}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => onPress(item)} style={[styles.item]}>
             <Text style={styles.title}>{item.programName}</Text>
@@ -52,9 +60,7 @@ const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
         small={true}
         icon="plus"
         onPress={() => {
-          navigation.navigate('OneWeekProgramScreen', {
-            totalProgram: null,
-          });
+          navigation.navigate('OneWeekProgramScreen');
         }}
       />
       <FAB style={styles.signOut} small icon="logout" onPress={signOut} />

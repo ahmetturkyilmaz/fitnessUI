@@ -1,25 +1,31 @@
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet} from 'react-native';
 import {Button, TextInput, Title} from 'react-native-paper';
-import {AuthContext} from '../../components/context';
 import {SignupRequest} from '../../types/auth/SignupRequest';
+import {postAuth} from '../../repository/auth/user';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLoading} from '../../redux/core';
+import {IStore} from '../../redux';
 
 const SignUpScreen = ({navigation}) => {
   const [email, setEmail] = useState<string>();
   const [name, setName] = useState<string>();
   const [surname, setSurname] = useState<string>();
   const [password, setPassword] = useState<string>();
-  const {signUp} = React.useContext(AuthContext);
-
+  const dispatch = useDispatch();
+  const loading = useSelector<IStore>((state) => state.core.loading);
   const onPressSignUpButton = () => {
-    const authConcept: SignupRequest = {
+    const authContext: SignupRequest = {
       email: email,
       name: name,
       surname: surname,
       password: password,
     };
-    signUp(authConcept);
-    navigation.goBack();
+    dispatch(setLoading(true));
+    postAuth(authContext).then((response) => {
+      dispatch(setLoading(false));
+      navigation.goBack();
+    });
   };
   return (
     <SafeAreaView style={styles.container}>

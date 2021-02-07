@@ -28,26 +28,28 @@ const getMoveSetByDay = (
   return [];
 };
 const updateMoveSetByDay = (
-  totalProgram: TotalProgram,
+  totalProgram: TotalProgram | undefined,
   dayOfWeek: DayOfWeek,
   newMoveSet: MoveSet,
 ) => {
-  let programOfDay: undefined | DailyProgram;
-  console.log('**', totalProgram.weeklyPrograms);
-  let oneWeekProgram;
-  if (totalProgram.weeklyPrograms) {
-    oneWeekProgram = totalProgram.weeklyPrograms[0];
-    let dailyPrograms = oneWeekProgram.dailyPrograms;
-    for (let oneDayProgram of dailyPrograms) {
-      if (oneDayProgram.dayOfWeek === dayOfWeek) {
-        programOfDay = oneDayProgram;
+  if (totalProgram) {
+    let programOfDay: undefined | DailyProgram;
+    console.log('**', totalProgram.weeklyPrograms);
+    let oneWeekProgram;
+    if (totalProgram.weeklyPrograms) {
+      oneWeekProgram = totalProgram.weeklyPrograms[0];
+      let dailyPrograms = oneWeekProgram.dailyPrograms;
+      for (let oneDayProgram of dailyPrograms) {
+        if (oneDayProgram.dayOfWeek === dayOfWeek) {
+          programOfDay = oneDayProgram;
+        }
       }
     }
+    if (programOfDay) {
+      programOfDay.moveSet = newMoveSet;
+    }
+    return totalProgram;
   }
-  if (programOfDay) {
-    programOfDay.moveSet = newMoveSet;
-  }
-  return totalProgram;
 };
 
 export {getMoveSetByDay, updateMoveSetByDay};

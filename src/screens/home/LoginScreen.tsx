@@ -1,20 +1,29 @@
 import React from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
-import {AuthContext} from '../../components/context';
 import logo from '../../assets/images/logo.png';
-import {IAuthContext} from '../../types/auth/IAuthContext';
 import {LoginRequest} from '../../types/auth/LoginRequest';
+import {getAuth} from '../../repository/auth/user';
+import {storeAccessToken} from '../../repository/AuthHelper';
+import {useDispatch} from 'react-redux';
+import {setToken} from '../../redux/user';
+import {setLoading} from '../../redux/core';
 
 const LoginScreen = ({navigation}: {navigation: any}) => {
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
+  const dispatch = useDispatch();
 
-  const {signIn} = React.useContext<IAuthContext>(AuthContext);
   const onPressLoginButton = () => {
-    const authConcept: LoginRequest = {email: email, password: password};
-    signIn(authConcept);
+    dispatch(setLoading(true));
+    const authContext: LoginRequest = {email: email, password: password};
+    getAuth(authContext).then((response) => {
+      dispatch(setToken(response.accessToken));
+      dispatch(setLoading(false));
+      storeAccessToken(response.accessToken);
+    });
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>

@@ -8,8 +8,11 @@ import {getMoveSetByDay} from './programStackUtil';
 import {Button, DefaultTheme} from 'react-native-paper';
 import {initializingTotalProgramData} from '../../../types/program/DefaultProgram';
 import {DayOfWeek} from '../../../types/enum/DayOfWeek';
+import {setTotalProgram, setWeeklyProgram} from '../../../redux/program';
+import {useDispatch, useSelector} from 'react-redux';
+import {IStore} from '../../../redux';
 
-const OneWeekProgramScreen = ({
+const WeeklyProgramsScreen = ({
   route,
   navigation,
 }: {
@@ -19,24 +22,24 @@ const OneWeekProgramScreen = ({
   const {totalProgram} = route.params;
   const [allWeeklyPrograms, setAllWeeklyProgram] = useState([]);
   const [activeSections, setActiveSections] = useState([0]);
-  const [currentTotalProgram, setCurrentTotalProgram] = useState();
-
+  const dispatch = useDispatch();
+  const currentTotalProgram = useSelector<IStore>(
+    (state) => state.program.totalProgram,
+  );
   useEffect(() => {
-    if (totalProgram == null) {
+    if (!totalProgram) {
       console.log('totalProgram null');
       totalProgramsNetwork.post(initializingTotalProgramData).then((data) => {
         console.log(data);
-        setCurrentTotalProgram(data);
+        dispatch(setTotalProgram(data));
         setAllWeeklyProgram(data.weeklyPrograms);
       });
     } else {
       console.log('totalProgram not null', totalProgram);
-      setCurrentTotalProgram(totalProgram);
+      dispatch(setTotalProgram(totalProgram));
       setAllWeeklyProgram(totalProgram.weeklyPrograms);
     }
-    if (route.params?.newTotalProgram) {
-      setCurrentTotalProgram(route.params?.newTotalProgram);
-    }
+    dispatch(setWeeklyProgram(allWeeklyPrograms[0]));
   }, []);
 
   const SECTIONS = [
@@ -148,7 +151,6 @@ const OneWeekProgramScreen = ({
   };
   const onPressSection = (day: DayOfWeek, content: any) => {
     navigation.navigate('EditDailyProgramScreen', {
-      totalProgram: currentTotalProgram,
       day: day,
       moveSet: content,
     });
@@ -177,4 +179,4 @@ const styles = StyleSheet.create({
   headerText: {},
 });
 
-export default OneWeekProgramScreen;
+export default WeeklyProgramsScreen;

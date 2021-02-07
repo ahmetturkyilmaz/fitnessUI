@@ -17,7 +17,7 @@ const totalProgramsNetwork = {
   post: async (totalProgram: TotalProgram) => {
     return post(urls.totalPrograms, totalProgram);
   },
-  put: async (totalProgram: TotalProgram) => {
+  put: async (totalProgram: TotalProgram | undefined) => {
     return put(urls.totalPrograms, totalProgram);
   },
 };
