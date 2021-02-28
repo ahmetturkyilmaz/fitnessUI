@@ -41,14 +41,18 @@ const WeekStackScreen = ({
     dispatch(setWeeklyProgramList(allWeeklyPrograms));
   }, []);
 
+  /*
+      {allWeeklyPrograms?.map((value) => {
+
+      })}
+
+      */
   return (
     <Tab.Navigator>
-      {allWeeklyPrograms?.map((value) => {
-        <Tab.Screen
-          name="WeeklyProgramsScreen"
-          component={WeeklyProgramsScreen}
-        />;
-      })}
+      <Tab.Screen
+        name="WeeklyProgramsScreen"
+        component={WeeklyProgramsScreen}
+      />
     </Tab.Navigator>
   );
 };
