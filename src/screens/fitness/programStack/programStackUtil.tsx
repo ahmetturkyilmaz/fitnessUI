@@ -30,7 +30,7 @@ const getMoveSetByDay = (
 const updateMoveSetByDay = (
   totalProgram: TotalProgram | undefined,
   dayOfWeek: DayOfWeek,
-  newMoveSet: MoveSet,
+  newMoveSet: MoveSet[] | undefined,
 ) => {
   if (totalProgram) {
     let programOfDay: undefined | DailyProgram;

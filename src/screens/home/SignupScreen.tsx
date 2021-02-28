@@ -4,10 +4,10 @@ import {Button, TextInput, Title} from 'react-native-paper';
 import {SignupRequest} from '../../types/auth/SignupRequest';
 import {postAuth} from '../../repository/auth/user';
 import {useDispatch, useSelector} from 'react-redux';
-import {setLoading} from '../../redux/core';
+import {setLoading} from '../../redux/core/core';
 import {IStore} from '../../redux';
 
-const SignUpScreen = ({navigation}) => {
+const SignUpScreen = ({route, navigation}: {route: any; navigation: any}) => {
   const [email, setEmail] = useState<string>();
   const [name, setName] = useState<string>();
   const [surname, setSurname] = useState<string>();

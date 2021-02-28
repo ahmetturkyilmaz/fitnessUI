@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
-const SplashScreen = ({navigation}: {navigation: any}) => {
+const UserNutritionScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -13,7 +13,6 @@ const SplashScreen = ({navigation}: {navigation: any}) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -33,4 +32,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
 });
-export default SplashScreen;
+export default UserNutritionScreen;

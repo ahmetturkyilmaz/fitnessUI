@@ -1,7 +1,7 @@
-import {MoveSet} from "./MoveSet";
+import {MoveSet} from './MoveSet';
 
 export interface DailyProgram {
-  name: string,
-  dayOfWeek: string,
-  moveSet?: MoveSet
+  name: string;
+  dayOfWeek: string;
+  moveSet?: MoveSet[];
 }

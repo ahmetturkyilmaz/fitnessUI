@@ -1,22 +1,25 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
-  Text,
-  StyleSheet,
-  SafeAreaView,
   FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
 } from 'react-native';
-import {AuthContext} from '../../../components/context';
 import {FAB} from 'react-native-paper';
 import {totalProgramsNetwork} from '../../../repository/program/program';
 import {TotalProgram} from '../../../types/program/TotalProgram';
 import {useDispatch, useSelector} from 'react-redux';
-import {setTotalProgramList} from '../../../redux/program';
+import {
+  setTotalProgram,
+  setTotalProgramList,
+} from '../../../redux/program/program';
 import {IStore} from '../../../redux';
-import {setLoading} from '../../../redux/core';
+import {setLoading} from '../../../redux/core/core';
+import {setToken} from '../../../redux/user/user';
+import {removeAccessToken} from '../../../repository/AuthHelper';
 
 const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
-  const {signOut} = useContext(AuthContext);
   const dispatch = useDispatch();
   const totalProgramList = useSelector<IStore, TotalProgram[]>(
     (state) => state.program.totalProgramList,
@@ -37,10 +40,14 @@ const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
   }, []);
 
   const onPress = (totalProgram: TotalProgram) => {
-    navigation.navigate('OneWeekProgramScreen', {
-      totalProgram: totalProgram,
-    });
+    dispatch(setTotalProgram(totalProgram));
+    navigation.navigate('OneWeekProgramScreen');
   };
+
+  function onPressSignOutButton() {
+    dispatch(setToken(null));
+    removeAccessToken();
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -63,7 +70,12 @@ const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
           navigation.navigate('OneWeekProgramScreen');
         }}
       />
-      <FAB style={styles.signOut} small icon="logout" onPress={signOut} />
+      <FAB
+        style={styles.signOut}
+        small
+        icon="logout"
+        onPress={() => onPressSignOutButton()}
+      />
     </SafeAreaView>
   );
 };

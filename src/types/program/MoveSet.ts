@@ -4,7 +4,7 @@ import {MoveType} from '../enum/MoveType';
 export interface MoveSet {
   _id?: string;
   name?: string;
-  moveNumber?: number;
+  moveNumber: number;
   moveType?: MoveType;
   sets?: number;
   setRepWeightMap?: {[key: string]: RepWeight};

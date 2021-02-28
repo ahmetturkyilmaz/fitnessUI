@@ -2,7 +2,10 @@ import React from 'react';
 import {Button, View} from 'react-native';
 import {TextInput, Portal, Dialog, Paragraph, Title} from 'react-native-paper';
 
-export const LoginDialog = (props) => {
+export const LoginDialog = (props: {
+  errorMessageFirst: React.ReactNode;
+  errorMessageSecond: React.ReactNode;
+}) => {
   const [visible, setVisible] = React.useState(false);
 
   const showDialog = () => setVisible(true);

@@ -1,16 +1,14 @@
-import React, {Props, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
 import * as Animatable from 'react-native-animatable';
-import {totalProgramsNetwork} from '../../../repository/program/program';
 import CustomizableDataTable from '../../../components/CustomizableDataTable';
 import {getMoveSetByDay} from './programStackUtil';
 import {Button, DefaultTheme} from 'react-native-paper';
-import {initializingTotalProgramData} from '../../../types/program/DefaultProgram';
 import {DayOfWeek} from '../../../types/enum/DayOfWeek';
-import {setTotalProgram, setWeeklyProgram} from '../../../redux/program';
 import {useDispatch, useSelector} from 'react-redux';
 import {IStore} from '../../../redux';
+import {MoveSet} from '../../../types/program/MoveSet';
 
 const WeeklyProgramsScreen = ({
   route,
@@ -26,21 +24,6 @@ const WeeklyProgramsScreen = ({
   const currentTotalProgram = useSelector<IStore>(
     (state) => state.program.totalProgram,
   );
-  useEffect(() => {
-    if (!totalProgram) {
-      console.log('totalProgram null');
-      totalProgramsNetwork.post(initializingTotalProgramData).then((data) => {
-        console.log(data);
-        dispatch(setTotalProgram(data));
-        setAllWeeklyProgram(data.weeklyPrograms);
-      });
-    } else {
-      console.log('totalProgram not null', totalProgram);
-      dispatch(setTotalProgram(totalProgram));
-      setAllWeeklyProgram(totalProgram.weeklyPrograms);
-    }
-    dispatch(setWeeklyProgram(allWeeklyPrograms[0]));
-  }, []);
 
   const SECTIONS = [
     {
@@ -89,14 +72,10 @@ const WeeklyProgramsScreen = ({
         transition="backgroundColor"
         style={{
           backgroundColor: isActive ? DefaultTheme.colors.primary : '#f1f1f1',
-
           borderBottomColor: isActive ? '#5109b5' : '#e1e1e1',
           borderBottomWidth: 2,
           paddingHorizontal: 8,
           paddingVertical: 16,
-          // backgroundColor: isActive
-          //   ? 'rgba(255,255,255,1)'
-          //   : 'rgba(245,252,255,1)',
         }}>
         <Text
           style={{
@@ -129,6 +108,7 @@ const WeeklyProgramsScreen = ({
             <CustomizableDataTable
               data={section.content}
               titles={['Name', 'Sets']}
+              childData={[]}
             />
             <Button
               mode="outlined"
@@ -149,11 +129,8 @@ const WeeklyProgramsScreen = ({
       </Animatable.View>
     );
   };
-  const onPressSection = (day: DayOfWeek, content: any) => {
-    navigation.navigate('EditDailyProgramScreen', {
-      day: day,
-      moveSet: content,
-    });
+  const onPressSection = (day: DayOfWeek, content: MoveSet[]) => {
+    navigation.navigate('EditDailyProgramScreen', {day: day, moveSet: content});
   };
 
   const updateSections = (item: any) => {

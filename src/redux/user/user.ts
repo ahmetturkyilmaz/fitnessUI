@@ -1,6 +1,6 @@
 import {createAction, createReducer} from '@reduxjs/toolkit';
 
-export const setToken = createAction<string>('user/set-token');
+export const setToken = createAction<string | null>('user/set-token');
 
 export interface IUserState {
   token?: string | null;

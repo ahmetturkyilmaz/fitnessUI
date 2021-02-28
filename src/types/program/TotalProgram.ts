@@ -4,7 +4,7 @@ export interface TotalProgram {
   _id?: string;
   programName?: string;
   programWeekType?: string;
-  weeklyPrograms?: WeeklyProgram[];
+  weeklyPrograms: WeeklyProgram[];
   createdAt?: number;
   createdBy?: string;
   version?: number;

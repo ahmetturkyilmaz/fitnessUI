@@ -1,6 +1,6 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import SplashScreen from './SplashScreen';
+import NutritionStackScreen from './nutritionStack/NutritionStackScreen';
 import ProgramStack from './programStack/ProgramStackScreen';
 import {DefaultTheme} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -25,8 +25,8 @@ const RootStackScreen = () => {
         }}
       />
       <Tab.Screen
-        name="Calorie Calculator"
-        component={SplashScreen}
+        name="NutritionStack"
+        component={NutritionStackScreen}
         options={{
           tabBarLabel: 'Calorie Calculator',
           tabBarIcon: ({color}) => (

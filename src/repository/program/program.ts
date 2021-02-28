@@ -1,6 +1,5 @@
-import {get, post, put} from '../network';
+import {deleteById, get, post, put} from '../network';
 import {TotalProgram} from '../../types/program/TotalProgram';
-import {MoveSet} from '../../types/program/MoveSet';
 
 const baseUrl = 'http://192.168.0.19:9086/api/programs';
 const urls = {
@@ -20,16 +19,8 @@ const totalProgramsNetwork = {
   put: async (totalProgram: TotalProgram | undefined) => {
     return put(urls.totalPrograms, totalProgram);
   },
-};
-const moveEntity = {
-  getMoveById: async (id: string | number): Promise<MoveSet> => {
-    return get(urls.moves + '/' + id).then((response) => response.data);
-  },
-  post: async (moveSet: MoveSet) => {
-    return post(urls.moves, moveSet);
-  },
-  put: async (moveSet: MoveSet) => {
-    return put(urls.moves, moveSet);
+  delete: async (id: string | number) => {
+    return deleteById(urls.totalPrograms + '/' + id);
   },
 };
 export {totalProgramsNetwork};

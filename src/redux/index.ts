@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
-import {IUserState, userReducer} from './user';
+import {IUserState, userReducer} from './user/user';
 import {configureStore} from '@reduxjs/toolkit';
-import {coreReducer, ICoreState} from './core';
-import {IProgramState, programReducer} from './program';
+import {coreReducer, ICoreState} from './core/core';
+import {IProgramState, programReducer} from './program/program';
 
 export interface IStore {
   core: ICoreState;

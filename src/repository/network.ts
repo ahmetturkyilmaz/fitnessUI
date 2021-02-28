@@ -1,5 +1,5 @@
 import Axios, {AxiosRequestConfig} from 'axios';
-import {getAccessToken, removeAccessToken} from './AuthHelper';
+import {getAccessToken} from './AuthHelper';
 
 const get = async (endpoint: string, params?: AxiosRequestConfig) => {
   const token = await getAccessToken();
@@ -40,5 +40,26 @@ const put = async (endpoint: string, body?: any) => {
     return response.data;
   });
 };
-
-export {get, post, put};
+const patch = async (endpoint: string, body?: any) => {
+  const token = await getAccessToken();
+  const headers = {
+    Authorization: 'Bearer ' + token,
+  };
+  return Axios.patch(`${endpoint}`, body, {
+    headers: headers,
+  }).then((response) => {
+    return response.data;
+  });
+};
+const deleteById = async (endpoint: string) => {
+  const token = await getAccessToken();
+  const headers = {
+    Authorization: 'Bearer ' + token,
+  };
+  return Axios.delete(`${endpoint}`, {
+    headers: headers,
+  }).then((response) => {
+    return response.data;
+  });
+};
+export {get, post, put, patch, deleteById};

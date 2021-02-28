@@ -1,13 +1,14 @@
 import React from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
+// @ts-ignore
 import logo from '../../assets/images/logo.png';
 import {LoginRequest} from '../../types/auth/LoginRequest';
 import {getAuth} from '../../repository/auth/user';
 import {storeAccessToken} from '../../repository/AuthHelper';
 import {useDispatch} from 'react-redux';
-import {setToken} from '../../redux/user';
-import {setLoading} from '../../redux/core';
+import {setToken} from '../../redux/user/user';
+import {setLoading} from '../../redux/core/core';
 
 const LoginScreen = ({navigation}: {navigation: any}) => {
   const [email, setEmail] = React.useState<string>('');

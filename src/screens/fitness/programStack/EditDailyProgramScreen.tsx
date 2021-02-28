@@ -7,7 +7,8 @@ import DailyProgramInputCard from '../../../components/DailyProgramInputCard';
 import {useDispatch, useSelector} from 'react-redux';
 import {IStore} from '../../../redux';
 import {TotalProgram} from '../../../types/program/TotalProgram';
-import {setTotalProgram} from '../../../redux/program';
+import {setTotalProgram} from '../../../redux/program/program';
+import {MoveSet} from '../../../types/program/MoveSet';
 
 const EditDailyProgramScreen = ({
   route,
@@ -17,14 +18,14 @@ const EditDailyProgramScreen = ({
   navigation: any;
 }) => {
   const {moveSet, day} = route.params;
-  const [currentMoveSet, setCurrentMoveSet] = useState([]);
+  const [currentMoveSetList, setCurrentMoveSetList] = useState<MoveSet[]>();
   const dispatch = useDispatch();
   const currentTotalProgram = useSelector<IStore, TotalProgram | undefined>(
     (state) => state.program.totalProgram,
   );
   useEffect(() => {
     if (moveSet !== null) {
-      setCurrentMoveSet(moveSet);
+      setCurrentMoveSetList(moveSet);
     }
   }, []);
 
@@ -32,13 +33,13 @@ const EditDailyProgramScreen = ({
     let newTotalProgram = updateMoveSetByDay(
       currentTotalProgram,
       day,
-      currentMoveSet,
+      currentMoveSetList,
     );
-    dispatch(setTotalProgram(newTotalProgram));
     totalProgramsNetwork
-      .put(currentTotalProgram)
+      .put(newTotalProgram)
       .then((r) => totalProgramsNetwork.getById(r))
       .then((payload) => {
+        dispatch(setTotalProgram(payload));
         navigation.navigate('OneWeekProgramScreen');
       });
   };
@@ -60,8 +61,10 @@ const EditDailyProgramScreen = ({
     <View>
       <DailyProgramInputCard
         moveSet={moveSet}
-        onMoveSetChanged={(input) => {
-          setCurrentMoveSet(input);
+        onMoveSetChanged={(
+          input: React.SetStateAction<MoveSet[] | undefined>,
+        ) => {
+          setCurrentMoveSetList(input);
         }}
       />
     </View>
