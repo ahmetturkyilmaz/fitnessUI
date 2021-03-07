@@ -6,7 +6,7 @@ import EditDailyProgramScreen from './EditDailyProgramScreen';
 import EditMappingScreen from './EditMappingScreen';
 
 type ProgramStackParamsList = {
-  TotalProgramList: {};
+  TotalProgramListScreen: {};
   WeeklyProgramsScreen: {};
   EditDailyProgramScreen: {};
   EditMappingScreen: {};
@@ -15,9 +15,9 @@ type ProgramStackParamsList = {
 const ProgramStack = createStackNavigator<ProgramStackParamsList>();
 
 const ProgramStackScreen = () => (
-  <ProgramStack.Navigator initialRouteName="TotalProgramList">
+  <ProgramStack.Navigator initialRouteName="TotalProgramListScreen">
     <ProgramStack.Screen
-      name="TotalProgramList"
+      name="TotalProgramListScreen"
       options={{title: 'Programs'}}
       component={TotalProgramListScreen}
     />

@@ -7,7 +7,7 @@ import {LoginRequest} from '../../types/auth/LoginRequest';
 import {getAuth} from '../../repository/auth/user';
 import {storeAccessToken} from '../../repository/AuthHelper';
 import {useDispatch} from 'react-redux';
-import {setToken} from '../../redux/user/user';
+import {setToken, setUser} from '../../redux/user/user';
 import {setLoading} from '../../redux/core/core';
 
 const LoginScreen = ({navigation}: {navigation: any}) => {
@@ -19,6 +19,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
     dispatch(setLoading(true));
     const authContext: LoginRequest = {email: email, password: password};
     getAuth(authContext).then((response) => {
+      dispatch(setUser(response))
       dispatch(setToken(response.accessToken));
       dispatch(setLoading(false));
       storeAccessToken(response.accessToken);
