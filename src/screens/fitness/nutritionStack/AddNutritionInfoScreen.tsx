@@ -1,18 +1,18 @@
 import React, {useEffect} from 'react';
-import {View} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {Button, Checkbox, Dialog, Paragraph, Portal, Text, TextInput} from 'react-native-paper';
-import 'antd-mobile/lib/date-picker/style/css';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {UserNutritionInfo} from "../../../types/nutrition/UserNutritionInfo";
 import {Sex} from "../../../types/enum/Sex";
-import calculateFatPercentage from "./nutritionStackUtil";
+import {calculateFatPercentage} from "./nutritionStackUtil";
 import {UserNutritionInfoNetwork} from "../../../repository/nutrition/nutrition";
 import {useDispatch} from "react-redux";
 import {setLatestUserNutritionInfo, setUserNutritionInfoList} from "../../../redux/nutrition/nutrition";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: any; }) => {
+const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: any; }) => {
     const dispatch = useDispatch();
-
+    const [dateOfInfo, setDateOfInfo] = React.useState<Date>(new Date());
     const [checked, setChecked] = React.useState(false);
     const [sex, setSex] = React.useState<Sex>(Sex.MALE);
     const [weight, setWeight] = React.useState<string>("");
@@ -25,6 +25,20 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
     const [visible, setVisible] = React.useState(false);
     const [errInfo, setErrInfo] = React.useState<string>();
     const {nutritionInfo} = route.params
+    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date: Date) => {
+        console.warn("A date has been picked: ", date);
+        hideDatePicker();
+    };
 
     useEffect(() => {
           if (nutritionInfo) {
@@ -55,6 +69,7 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
             }
         }
         let userInfo: UserNutritionInfo = {
+            dateOfInfo: dateOfInfo,
             fatPercentage: parseFloat(fatPercentage),
             height: parseFloat(height),
             hip: parseFloat(hip),
@@ -74,6 +89,7 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
 
     const onPressSaveButton = () => {
         let newInfo: UserNutritionInfo = {
+            dateOfInfo: dateOfInfo,
             fatPercentage: parseFloat(fatPercentage),
             height: parseFloat(height),
             hip: parseFloat(hip),
@@ -98,7 +114,7 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
     }
 
     return (
-      <View>
+      <View style={styles.container}>
           <Portal>
               <Dialog visible={visible} onDismiss={hideDialog}>
                   <Dialog.Title>Alert</Dialog.Title>
@@ -116,8 +132,17 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
                     }}
           />
           <View>
+              <Button title="Show Date Picker" onPress={showDatePicker}/>
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+              />
+          </View>
+          <View>
               <View>
-                  <Text>Sex</Text>
+                  <Text style={styles.fieldText}>Sex</Text>
                   <DropDownPicker
                     items={[
                         {label: 'MALE', value: 'MALE', hidden: true}, {label: 'FEMALE', value: 'FEMALE'}
@@ -129,44 +154,90 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
                     dropDownStyle={{backgroundColor: '#fafafa'}}
                     onChangeItem={item => setSex(item)}/>
               </View>
-              <View>
-                  <Text>Weight</Text>
-                  <TextInput onChangeText={(text) => setWeight(text)}>{weight}</TextInput>
-              </View>
-              <View>
-                  <Text>Height</Text>
-                  <TextInput onChangeText={(text) => setHeight(text)}>{height}</TextInput>
-              </View>
-              <View>
-                  <Text>Fat Percentage</Text>
-                  <TextInput onChangeText={(text) => setFatPercentage(text)}>{fatPercentage}</TextInput>
-              </View>
-              <View>
-                  <View>
-                      <Text>Waist</Text>
-                      <TextInput onChangeText={(text) => setWaist(text)}>{waist}</TextInput>
+              <View style={styles.childContainer}>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Weight</Text>
+                      <TextInput style={styles.textInput} onChangeText={(text) => setWeight(text)}>{weight}</TextInput>
                   </View>
-                  <View>
-                      <Text>Hip</Text>
-                      <TextInput onChangeText={(text) => setHip(text)}>{hip}</TextInput>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Height</Text>
+                      <TextInput style={styles.textInput} onChangeText={(text) => setHeight(text)}>{height}</TextInput>
                   </View>
-                  <View>
-                      <Text>neck</Text>
-                      <TextInput onChangeText={(text) => setNeck(text)}>{neck}</TextInput>
+              </View>
+              <View style={styles.childContainer}>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Waist</Text>
+                      <TextInput style={styles.textInput} onChangeText={(text) => setWaist(text)}>{waist}</TextInput>
+                  </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Hip</Text>
+                      <TextInput style={styles.textInput} onChangeText={(text) => setHip(text)}>{hip}</TextInput>
+                  </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>neck</Text>
+                      <TextInput style={styles.textInput} onChangeText={(text) => setNeck(text)}>{neck}</TextInput>
+                  </View>
+              </View>
+              <View style={styles.childContainer}>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Fat Percentage</Text>
+                      <TextInput style={styles.textInput}
+                                 onChangeText={(text) => setFatPercentage(text)}>{fatPercentage}</TextInput>
+                  </View>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Muscle Percentage</Text>
+                      <TextInput style={styles.textInput}
+                                 onChangeText={(text) => setMusclePercentage(text)}>{musclePercentage}</TextInput>
                   </View>
               </View>
               <View>
                   <Button onPress={() => onCalculateButtonPressed()}>Calculate Yourself</Button>
               </View>
-              <View>
-                  <Text>Muscle Percentage</Text>
-                  <TextInput onChangeText={(text) => setMusclePercentage(text)}>{musclePercentage}</TextInput>
-              </View>
+
               <Button onPress={() => onPressSaveButton()}/>
 
           </View>
       </View>
     )
 }
+const styles = StyleSheet.create({
 
+
+    container: {
+        flex: 1,
+        backgroundColor: '#E57D14',
+        flexDirection: "column"
+    },
+    childContainer: {
+        flexDirection: "row",
+    },
+    twoInputContainer: {
+        flex: 2
+    },
+    threeInputContainer: {
+        flex: 2
+    },
+    textInput: {
+        marginLeft: 10,
+        marginRight: 10
+    },
+    fieldText: {
+
+        color: '#000',
+        fontSize: 12,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 8,
+        marginRight: 8,
+        textAlign: "center"
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 50,
+        height: 40,
+        backgroundColor: 'red',
+    },
+});
 export default AddNutritionInfoScreen;

@@ -1,17 +1,17 @@
 import {deleteById, get, post, put} from '../network';
 import {TotalProgram} from '../../types/program/TotalProgram';
 
-const baseUrl = 'http://192.168.0.19:9086/api/programs';
+const baseUrl = 'http://192.168.0.18:9086/api/programs';
 const urls = {
   totalPrograms: baseUrl + '/total-program',
   moves: baseUrl + '/move',
 };
 const totalProgramsNetwork = {
   getAll: async (): Promise<TotalProgram[]> => {
-    return get(urls.totalPrograms).then((response) => response.data);
+    return get(urls.totalPrograms).then((response) => response);
   },
   getById: async (id: string | number): Promise<TotalProgram> => {
-    return get(urls.totalPrograms + '/' + id).then((response) => response.data);
+    return get(urls.totalPrograms + '/' + id).then((response) => response);
   },
   post: async (totalProgram: TotalProgram) => {
     return post(urls.totalPrograms, totalProgram);

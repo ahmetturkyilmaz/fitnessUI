@@ -1,17 +1,18 @@
 import {deleteById, get, patch, post, put} from '../network';
 import {UserNutritionInfo} from '../../types/nutrition/UserNutritionInfo';
 
-const baseUrl = 'http://192.168.0.19:9085/api';
+const baseUrl = 'http://192.168.0.18:9085/api';
 const urls = {
     userNutritionInfo: baseUrl + '/user-nutrition',
 };
 const UserNutritionInfoNetwork = {
     getAll: async (): Promise<UserNutritionInfo[]> => {
-        return get(urls.userNutritionInfo).then((response) => response.data);
+        return get(urls.userNutritionInfo).then(
+          (response) => response);
     },
     getById: async (id: string | number): Promise<UserNutritionInfo> => {
         return get(urls.userNutritionInfo + '/' + id).then(
-            (response) => response.data,
+          (response) => response,
         );
     },
     post: async (userNutritionInfo: UserNutritionInfo) => {

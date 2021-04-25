@@ -26,6 +26,7 @@ const post = async (endpoint: string, body?: any) => {
   return Axios.post(`${endpoint}`, body, {
     headers: headers,
   }).then((response) => {
+    console.log("post içi ", response.data)
     return response.data;
   });
 };
