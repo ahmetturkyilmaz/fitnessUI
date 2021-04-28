@@ -1,20 +1,25 @@
 import React, {useEffect} from 'react';
-import {View} from "react-native";
-import {Button, Checkbox, Dialog, Paragraph, Portal, Text, TextInput} from 'react-native-paper';
-import 'antd-mobile/lib/date-picker/style/css';
+import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {Button, Dialog, Paragraph, Portal, Text, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {UserNutritionInfo} from "../../../types/nutrition/UserNutritionInfo";
 import {Sex} from "../../../types/enum/Sex";
-import calculateFatPercentage from "./nutritionStackUtil";
+import {calculateFatPercentage} from "./nutritionStackUtil";
 import {UserNutritionInfoNetwork} from "../../../repository/nutrition/nutrition";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setLatestUserNutritionInfo, setUserNutritionInfoList} from "../../../redux/nutrition/nutrition";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import dateFormat from "dateformat";
+import {Unit} from "../../../types/enum/Unit";
+import {IStore} from "../../../redux";
+import {JWTResponse} from "../../../types/auth/JWTResponse";
 
-const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: any; }) => {
+const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: any; }) => {
     const dispatch = useDispatch();
-
+    const [dateOfInfo, setDateOfInfo] = React.useState<Date>(new Date());
     const [checked, setChecked] = React.useState(false);
     const [sex, setSex] = React.useState<Sex>(Sex.MALE);
+    const [unit, setUnit] = React.useState<Unit>(Unit.METRIC)
     const [weight, setWeight] = React.useState<string>("");
     const [height, setHeight] = React.useState<string>("");
     const [fatPercentage, setFatPercentage] = React.useState<string>("");
@@ -25,13 +30,29 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
     const [visible, setVisible] = React.useState(false);
     const [errInfo, setErrInfo] = React.useState<string>();
     const {nutritionInfo} = route.params
+    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+    const userInfo = useSelector<IStore, JWTResponse | undefined>(state => state.user.jwtResponse)
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date: Date) => {
+        console.warn("A date has been picked: ", date);
+        setDateOfInfo(date);
+        hideDatePicker();
+    };
 
     useEffect(() => {
           if (nutritionInfo) {
               setSex(nutritionInfo.sex);
               setWeight(nutritionInfo.weight);
               setHeight(nutritionInfo.height);
-              musclePercentage(nutritionInfo.musclePercentage);
+              setMusclePercentage(nutritionInfo.musclePercentage);
               setFatPercentage(nutritionInfo.fatPercentage);
               setWaist(nutritionInfo.waist);
               setHip(nutritionInfo.hip);
@@ -55,6 +76,7 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
             }
         }
         let userInfo: UserNutritionInfo = {
+            dateOfInfo: dateOfInfo,
             fatPercentage: parseFloat(fatPercentage),
             height: parseFloat(height),
             hip: parseFloat(hip),
@@ -74,6 +96,7 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
 
     const onPressSaveButton = () => {
         let newInfo: UserNutritionInfo = {
+            dateOfInfo: dateOfInfo,
             fatPercentage: parseFloat(fatPercentage),
             height: parseFloat(height),
             hip: parseFloat(hip),
@@ -98,7 +121,7 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
     }
 
     return (
-      <View>
+      <View style={styles.container}>
           <Portal>
               <Dialog visible={visible} onDismiss={hideDialog}>
                   <Dialog.Title>Alert</Dialog.Title>
@@ -110,63 +133,196 @@ const AddNutritionInfoScreen = ({route, navigation,}: { route: any; navigation: 
                   </Dialog.Actions>
               </Dialog>
           </Portal>
-          <Checkbox status={checked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setChecked(!checked);
-                    }}
-          />
+
           <View>
-              <View>
-                  <Text>Sex</Text>
-                  <DropDownPicker
-                    items={[
-                        {label: 'MALE', value: 'MALE', hidden: true}, {label: 'FEMALE', value: 'FEMALE'}
-                    ]}
-                    defaultValue={sex}
-                    containerStyle={{height: 40}}
-                    style={{backgroundColor: '#fafafa'}}
-                    itemStyle={{justifyContent: 'flex-start'}}
-                    dropDownStyle={{backgroundColor: '#fafafa'}}
-                    onChangeItem={item => setSex(item)}/>
-              </View>
-              <View>
-                  <Text>Weight</Text>
-                  <TextInput onChangeText={(text) => setWeight(text)}>{weight}</TextInput>
-              </View>
-              <View>
-                  <Text>Height</Text>
-                  <TextInput onChangeText={(text) => setHeight(text)}>{height}</TextInput>
-              </View>
-              <View>
-                  <Text>Fat Percentage</Text>
-                  <TextInput onChangeText={(text) => setFatPercentage(text)}>{fatPercentage}</TextInput>
-              </View>
-              <View>
-                  <View>
-                      <Text>Waist</Text>
-                      <TextInput onChangeText={(text) => setWaist(text)}>{waist}</TextInput>
+              <View style={styles.childContainer}>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.nameField}>{userInfo?.name}</Text>
                   </View>
-                  <View>
-                      <Text>Hip</Text>
-                      <TextInput onChangeText={(text) => setHip(text)}>{hip}</TextInput>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Date</Text>
+                      <TouchableOpacity style={styles.dateStyle} onPress={showDatePicker}>
+                          <Text style={styles.dateString}>
+                              {dateFormat(dateOfInfo, "dd-mm-yy").toString()}
+                          </Text>
+                          <DateTimePickerModal
+                            style={styles.datePickerModalStyle}
+                            isVisible={isDatePickerVisible}
+                            mode="date"
+                            onConfirm={handleConfirm}
+                            onCancel={hideDatePicker}
+                          />
+                      </TouchableOpacity>
                   </View>
-                  <View>
-                      <Text>neck</Text>
-                      <TextInput onChangeText={(text) => setNeck(text)}>{neck}</TextInput>
+              </View>
+              <View style={styles.childContainer}>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Sex</Text>
+                      <DropDownPicker
+                        items={[
+                            {label: 'MALE', value: 'MALE', hidden: true},
+                            {label: 'FEMALE', value: 'FEMALE'}
+                        ]}
+                        defaultValue={sex}
+                        containerStyle={{height: 40}}
+                        style={styles.textInput}
+                        itemStyle={{justifyContent: 'flex-start'}}
+                        dropDownStyle={{backgroundColor: '#fafafa'}}
+                        onChangeItem={setSex}/>
+                  </View>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Unit</Text>
+                      <DropDownPicker
+                        items={[
+                            {label: 'METRIC (gram,meter)', value: 'METRIC', hidden: true},
+                            {label: 'IMPERIAL (pound,inch)', value: 'IMPERIAL'}
+                        ]}
+                        defaultValue={unit}
+                        containerStyle={{height: 40}}
+                        style={styles.textInput}
+                        itemStyle={{justifyContent: 'flex-start'}}
+                        dropDownStyle={{backgroundColor: '#fafafa'}}
+                        onChangeItem={setUnit}/>
+                  </View>
+              </View>
+              <View style={styles.childContainer}>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Weight</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        selectionColor={'#578'}
+                        underlineColor={'#861'}
+                        style={styles.textInput}
+                        onChangeText={(text) => setWeight(text)}
+                        value={weight}/>
+                  </View>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Height</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setHeight}
+                        value={height}/>
+                  </View>
+              </View>
+              <View style={styles.childContainer}>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Waist</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setWaist}
+                        value={waist}/>
+                  </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Hip</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setHip}
+                        value={hip}/>
+                  </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>neck</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setNeck}
+                        value={neck}/>
+                  </View>
+              </View>
+              <View style={styles.childContainer}>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Fat Percentage</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setFatPercentage}
+                        value={fatPercentage}/>
+                  </View>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Muscle Percentage</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setMusclePercentage}
+                        value={musclePercentage}/>
                   </View>
               </View>
               <View>
                   <Button onPress={() => onCalculateButtonPressed()}>Calculate Yourself</Button>
               </View>
-              <View>
-                  <Text>Muscle Percentage</Text>
-                  <TextInput onChangeText={(text) => setMusclePercentage(text)}>{musclePercentage}</TextInput>
-              </View>
-              <Button onPress={() => onPressSaveButton()}/>
-
+              <Button onPress={() => onPressSaveButton()}>Save</Button>
           </View>
       </View>
     )
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#E57D14',
+        flexDirection: "column"
+    },
+    childContainer: {
+        flexDirection: "row",
+    },
+    twoInputContainer: {
+        flex: 2
+    },
+    threeInputContainer: {
+        flex: 2
+    },
+    textInput: {
+        marginLeft: 10,
+        marginRight: 10
+    },
+    dateStyle: {
+        marginLeft: 10,
+        marginRight: 10,
+        flex: 2,
+        marginTop: 5,
+        marginBottom: 5,
+        backgroundColor: '#fff',
+        justifyContent: "center",
+    },
+    dateString: {
+        textAlign: "center",
+    },
+    nameField: {
+        textAlign: "center"
 
+    },
+    fieldText: {
+        color: '#000',
+        fontSize: 12,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 8,
+        marginRight: 8,
+        textAlign: "center"
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 50,
+        height: 40,
+        backgroundColor: 'red',
+    },
+    saveButton: {
+        backgroundColor: '#000'
+    },
+    datePickerModalStyle: {
+        backgroundColor:'#fff'
+    }
+
+
+});
 export default AddNutritionInfoScreen;

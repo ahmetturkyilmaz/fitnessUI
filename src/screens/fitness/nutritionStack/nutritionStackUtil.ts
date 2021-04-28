@@ -1,7 +1,7 @@
 import {UserNutritionInfo} from "../../../types/nutrition/UserNutritionInfo";
 import {Sex} from "../../../types/enum/Sex";
 
-const calculateFatPercentage = (userNutritionInfo: UserNutritionInfo) => {
+export const calculateFatPercentage = (userNutritionInfo: UserNutritionInfo) => {
     let userInfo = {...userNutritionInfo}
     let bodyFat: number = 0;
     let waist = userInfo.waist;
@@ -25,4 +25,12 @@ const calculateFatPercentage = (userNutritionInfo: UserNutritionInfo) => {
     }
     return bodyFat.toString()
 }
-export default calculateFatPercentage;
+
+export const findUserInfoFromLatestDate = (userInfoList: UserNutritionInfo[]) => {
+    if (userInfoList && userInfoList.length != 0) {
+        return userInfoList.reduce(function (r, a) {
+            return r.dateOfInfo > a.dateOfInfo ? r : a;
+        });
+    }
+    return undefined;
+}

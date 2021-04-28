@@ -27,7 +27,6 @@ const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
   const loading = useSelector<IStore>((state) => state.core.loading);
 
   useEffect(() => {
-    dispatch(setLoading(true));
     totalProgramsNetwork
       .getAll()
       .then((data) => {
@@ -35,7 +34,6 @@ const TotalProgramListScreen = ({navigation}: {navigation: any}) => {
       })
       .finally(() => {
         console.log(totalProgramList);
-        dispatch(setLoading(false));
       });
   }, []);
 
@@ -106,6 +104,7 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: 'red',
   },
+
   item: {
     backgroundColor: '#FFF',
     width: '100%',

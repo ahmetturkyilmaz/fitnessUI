@@ -6,75 +6,103 @@ import {useDispatch, useSelector} from "react-redux";
 import {IStore} from "../../../redux";
 import {setLatestUserNutritionInfo, setUserNutritionInfoList} from "../../../redux/nutrition/nutrition";
 import {JWTResponse} from "../../../types/auth/JWTResponse";
+import {FAB} from "react-native-paper";
+import {findUserInfoFromLatestDate} from "./nutritionStackUtil";
 
-const UserNutritionScreen = () => {
-    let userNutritionInfo: UserNutritionInfo[];
+const UserNutritionScreen = ({navigation}: { navigation: any }) => {
+    const [userNutritionInfo, setUserNutritionInfo] = useState<UserNutritionInfo>();
     const dispatch = useDispatch();
-    const userNutritionInfoList = useSelector<IStore, UserNutritionInfo[]>(
-        (state) => state.nutrition.userNutritionInfoList,
-    );
+    const userNutritionInfoList = useSelector<IStore, UserNutritionInfo[]>((state) => state.nutrition.userNutritionInfoList,);
     const userInfo = useSelector<IStore, JWTResponse | undefined>(state => state.user.jwtResponse)
     const latestNutritionInfo = useSelector<IStore, UserNutritionInfo | undefined>(
-        (state) => state.nutrition.latestNutritionInfo
+      (state) => state.nutrition.latestNutritionInfo
     )
     useEffect(() => {
         UserNutritionInfoNetwork.getAll()
-            .then(userInfo => {
-                dispatch(setUserNutritionInfoList(userInfo));
-                dispatch(setLatestUserNutritionInfo(userInfo.slice(-1)[0]));
-            });
+          .then(userInfo => {
+              dispatch(setUserNutritionInfoList(userInfo));
+              let latestInfo = findUserInfoFromLatestDate(userInfo)
+              if (latestInfo) {
+                  dispatch(setLatestUserNutritionInfo(latestInfo));
+              }
+              setUserNutritionInfo(latestInfo)
+          });
     }, [])
     return (
-        <View style={styles.container}>
+
+      userNutritionInfo ? (
+        <View>
             <View>
                 <View>
                     <Text>{userInfo?.name + " " + userInfo?.surname}</Text>
                 </View>
                 <View>
-                    <Text>{latestNutritionInfo?.sex}</Text>
+                    <Text>{userNutritionInfo?.sex}</Text>
                 </View>
                 <View>
-                    <Text>{latestNutritionInfo?.createdAt}</Text>
+                    <Text>{userNutritionInfo?.createdAt}</Text>
                 </View>
             </View>
             <View>
-                <Text>{latestNutritionInfo?.weight}</Text>
+                <Text>{userNutritionInfo?.weight}</Text>
             </View>
             <View>
-                <Text>{latestNutritionInfo?.height}</Text>
+                <Text>{userNutritionInfo?.height}</Text>
             </View>
             <View>
-                <Text>{latestNutritionInfo?.fatPercentage}</Text>
+                <Text>{userNutritionInfo?.fatPercentage}</Text>
             </View>
             <View>
-                <Text>{latestNutritionInfo?.musclePercentage}</Text>
-            </View>
-            <View style={styles.header}>
-                <Text>Header</Text>
-            </View>
-            <View style={styles.footer}>
-                <Text>Footer</Text>
+                <Text>{userNutritionInfo?.musclePercentage}</Text>
             </View>
         </View>
+      ) : (
+        <View style={styles.containerEmptyView}>
+            <View style={styles.infoEmptyView}>
+                <Text style={styles.infoEmptyText}>You have not entered your information yet!</Text>
+            </View>
+            <FAB
+              style={styles.fab}
+              small={true}
+              icon="plus"
+              onPress={() => {
+                  navigation.navigate('AddNutritionInfoScreen', {nutritionInfo: null});
+              }}
+            />
+        </View>
+      )
+
     );
 };
 const styles = StyleSheet.create({
+    containerEmptyView: {
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center"
+    },
     container: {
         flex: 1,
         backgroundColor: '#E57D14',
+        flexDirection: "column"
     },
-    header: {
-        flex: 1,
+    infoEmptyView: {
         justifyContent: 'center',
         alignItems: 'center',
     },
-    footer: {
-        flex: 2,
-        backgroundColor: '#fff',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        paddingVertical: 50,
-        paddingHorizontal: 30,
+    infoEmptyText: {
+        color: '#000',
+        fontSize: 20,
+        textAlign: 'center',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 50,
+        height: 40,
+        backgroundColor: 'red',
     },
 });
 export default UserNutritionScreen;

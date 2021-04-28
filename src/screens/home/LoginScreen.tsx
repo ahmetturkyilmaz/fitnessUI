@@ -19,6 +19,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
     dispatch(setLoading(true));
     const authContext: LoginRequest = {email: email, password: password};
     getAuth(authContext).then((response) => {
+      console.log("authresponse: ", response)
       dispatch(setUser(response))
       dispatch(setToken(response.accessToken));
       dispatch(setLoading(false));
