@@ -12,9 +12,7 @@ import {findUserInfoFromLatestDate} from "./nutritionStackUtil";
 const UserNutritionScreen = ({navigation}: { navigation: any }) => {
     const [userNutritionInfo, setUserNutritionInfo] = useState<UserNutritionInfo>();
     const dispatch = useDispatch();
-    const userNutritionInfoList = useSelector<IStore, UserNutritionInfo[]>(
-      (state) => state.nutrition.userNutritionInfoList,
-    );
+    const userNutritionInfoList = useSelector<IStore, UserNutritionInfo[]>((state) => state.nutrition.userNutritionInfoList,);
     const userInfo = useSelector<IStore, JWTResponse | undefined>(state => state.user.jwtResponse)
     const latestNutritionInfo = useSelector<IStore, UserNutritionInfo | undefined>(
       (state) => state.nutrition.latestNutritionInfo

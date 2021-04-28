@@ -1,20 +1,25 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, View} from "react-native";
-import {Button, Checkbox, Dialog, Paragraph, Portal, Text, TextInput} from 'react-native-paper';
+import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {Button, Dialog, Paragraph, Portal, Text, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {UserNutritionInfo} from "../../../types/nutrition/UserNutritionInfo";
 import {Sex} from "../../../types/enum/Sex";
 import {calculateFatPercentage} from "./nutritionStackUtil";
 import {UserNutritionInfoNetwork} from "../../../repository/nutrition/nutrition";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setLatestUserNutritionInfo, setUserNutritionInfoList} from "../../../redux/nutrition/nutrition";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import dateFormat from "dateformat";
+import {Unit} from "../../../types/enum/Unit";
+import {IStore} from "../../../redux";
+import {JWTResponse} from "../../../types/auth/JWTResponse";
 
 const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: any; }) => {
     const dispatch = useDispatch();
     const [dateOfInfo, setDateOfInfo] = React.useState<Date>(new Date());
     const [checked, setChecked] = React.useState(false);
     const [sex, setSex] = React.useState<Sex>(Sex.MALE);
+    const [unit, setUnit] = React.useState<Unit>(Unit.METRIC)
     const [weight, setWeight] = React.useState<string>("");
     const [height, setHeight] = React.useState<string>("");
     const [fatPercentage, setFatPercentage] = React.useState<string>("");
@@ -26,6 +31,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
     const [errInfo, setErrInfo] = React.useState<string>();
     const {nutritionInfo} = route.params
     const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+    const userInfo = useSelector<IStore, JWTResponse | undefined>(state => state.user.jwtResponse)
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -37,6 +43,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
 
     const handleConfirm = (date: Date) => {
         console.warn("A date has been picked: ", date);
+        setDateOfInfo(date);
         hideDatePicker();
     };
 
@@ -45,7 +52,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
               setSex(nutritionInfo.sex);
               setWeight(nutritionInfo.weight);
               setHeight(nutritionInfo.height);
-              musclePercentage(nutritionInfo.musclePercentage);
+              setMusclePercentage(nutritionInfo.musclePercentage);
               setFatPercentage(nutritionInfo.fatPercentage);
               setWaist(nutritionInfo.waist);
               setHip(nutritionInfo.hip);
@@ -126,83 +133,138 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                   </Dialog.Actions>
               </Dialog>
           </Portal>
-          <Checkbox status={checked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setChecked(!checked);
-                    }}
-          />
+
           <View>
-              <Button title="Show Date Picker" onPress={showDatePicker}/>
-              <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="date"
-                onConfirm={handleConfirm}
-                onCancel={hideDatePicker}
-              />
-          </View>
-          <View>
-              <View>
-                  <Text style={styles.fieldText}>Sex</Text>
-                  <DropDownPicker
-                    items={[
-                        {label: 'MALE', value: 'MALE', hidden: true}, {label: 'FEMALE', value: 'FEMALE'}
-                    ]}
-                    defaultValue={sex}
-                    containerStyle={{height: 40}}
-                    style={{backgroundColor: '#fafafa'}}
-                    itemStyle={{justifyContent: 'flex-start'}}
-                    dropDownStyle={{backgroundColor: '#fafafa'}}
-                    onChangeItem={item => setSex(item)}/>
+              <View style={styles.childContainer}>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.nameField}>{userInfo?.name}</Text>
+                  </View>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Date</Text>
+                      <TouchableOpacity style={styles.dateStyle} onPress={showDatePicker}>
+                          <Text style={styles.dateString}>
+                              {dateFormat(dateOfInfo, "dd-mm-yy").toString()}
+                          </Text>
+                          <DateTimePickerModal
+                            style={styles.datePickerModalStyle}
+                            isVisible={isDatePickerVisible}
+                            mode="date"
+                            onConfirm={handleConfirm}
+                            onCancel={hideDatePicker}
+                          />
+                      </TouchableOpacity>
+                  </View>
+              </View>
+              <View style={styles.childContainer}>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Sex</Text>
+                      <DropDownPicker
+                        items={[
+                            {label: 'MALE', value: 'MALE', hidden: true},
+                            {label: 'FEMALE', value: 'FEMALE'}
+                        ]}
+                        defaultValue={sex}
+                        containerStyle={{height: 40}}
+                        style={styles.textInput}
+                        itemStyle={{justifyContent: 'flex-start'}}
+                        dropDownStyle={{backgroundColor: '#fafafa'}}
+                        onChangeItem={setSex}/>
+                  </View>
+                  <View style={styles.twoInputContainer}>
+                      <Text style={styles.fieldText}>Unit</Text>
+                      <DropDownPicker
+                        items={[
+                            {label: 'METRIC (gram,meter)', value: 'METRIC', hidden: true},
+                            {label: 'IMPERIAL (pound,inch)', value: 'IMPERIAL'}
+                        ]}
+                        defaultValue={unit}
+                        containerStyle={{height: 40}}
+                        style={styles.textInput}
+                        itemStyle={{justifyContent: 'flex-start'}}
+                        dropDownStyle={{backgroundColor: '#fafafa'}}
+                        onChangeItem={setUnit}/>
+                  </View>
               </View>
               <View style={styles.childContainer}>
                   <View style={styles.twoInputContainer}>
                       <Text style={styles.fieldText}>Weight</Text>
-                      <TextInput style={styles.textInput} onChangeText={(text) => setWeight(text)}>{weight}</TextInput>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        selectionColor={'#578'}
+                        underlineColor={'#861'}
+                        style={styles.textInput}
+                        onChangeText={(text) => setWeight(text)}
+                        value={weight}/>
                   </View>
                   <View style={styles.twoInputContainer}>
                       <Text style={styles.fieldText}>Height</Text>
-                      <TextInput style={styles.textInput} onChangeText={(text) => setHeight(text)}>{height}</TextInput>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setHeight}
+                        value={height}/>
                   </View>
               </View>
               <View style={styles.childContainer}>
                   <View style={styles.threeInputContainer}>
                       <Text style={styles.fieldText}>Waist</Text>
-                      <TextInput style={styles.textInput} onChangeText={(text) => setWaist(text)}>{waist}</TextInput>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setWaist}
+                        value={waist}/>
                   </View>
                   <View style={styles.threeInputContainer}>
                       <Text style={styles.fieldText}>Hip</Text>
-                      <TextInput style={styles.textInput} onChangeText={(text) => setHip(text)}>{hip}</TextInput>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setHip}
+                        value={hip}/>
                   </View>
                   <View style={styles.threeInputContainer}>
                       <Text style={styles.fieldText}>neck</Text>
-                      <TextInput style={styles.textInput} onChangeText={(text) => setNeck(text)}>{neck}</TextInput>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setNeck}
+                        value={neck}/>
                   </View>
               </View>
               <View style={styles.childContainer}>
                   <View style={styles.twoInputContainer}>
                       <Text style={styles.fieldText}>Fat Percentage</Text>
-                      <TextInput style={styles.textInput}
-                                 onChangeText={(text) => setFatPercentage(text)}>{fatPercentage}</TextInput>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setFatPercentage}
+                        value={fatPercentage}/>
                   </View>
                   <View style={styles.twoInputContainer}>
                       <Text style={styles.fieldText}>Muscle Percentage</Text>
-                      <TextInput style={styles.textInput}
-                                 onChangeText={(text) => setMusclePercentage(text)}>{musclePercentage}</TextInput>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setMusclePercentage}
+                        value={musclePercentage}/>
                   </View>
               </View>
               <View>
                   <Button onPress={() => onCalculateButtonPressed()}>Calculate Yourself</Button>
               </View>
-
-              <Button onPress={() => onPressSaveButton()}/>
-
+              <Button onPress={() => onPressSaveButton()}>Save</Button>
           </View>
       </View>
     )
 }
 const styles = StyleSheet.create({
-
-
     container: {
         flex: 1,
         backgroundColor: '#E57D14',
@@ -221,8 +283,23 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10
     },
-    fieldText: {
+    dateStyle: {
+        marginLeft: 10,
+        marginRight: 10,
+        flex: 2,
+        marginTop: 5,
+        marginBottom: 5,
+        backgroundColor: '#fff',
+        justifyContent: "center",
+    },
+    dateString: {
+        textAlign: "center",
+    },
+    nameField: {
+        textAlign: "center"
 
+    },
+    fieldText: {
         color: '#000',
         fontSize: 12,
         marginTop: 5,
@@ -239,5 +316,13 @@ const styles = StyleSheet.create({
         height: 40,
         backgroundColor: 'red',
     },
+    saveButton: {
+        backgroundColor: '#000'
+    },
+    datePickerModalStyle: {
+        backgroundColor:'#fff'
+    }
+
+
 });
 export default AddNutritionInfoScreen;
