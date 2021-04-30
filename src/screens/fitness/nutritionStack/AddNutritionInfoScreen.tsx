@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {StyleSheet, View} from "react-native";
+import {TouchableOpacity} from 'react-native-gesture-handler'
 import {Button, Dialog, Paragraph, Portal, Text, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {UserNutritionInfo} from "../../../types/nutrition/UserNutritionInfo";
@@ -14,10 +15,10 @@ import {Unit} from "../../../types/enum/Unit";
 import {IStore} from "../../../redux";
 import {JWTResponse} from "../../../types/auth/JWTResponse";
 
+
 const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: any; }) => {
     const dispatch = useDispatch();
     const [dateOfInfo, setDateOfInfo] = React.useState<Date>(new Date());
-    const [checked, setChecked] = React.useState(false);
     const [sex, setSex] = React.useState<Sex>(Sex.MALE);
     const [unit, setUnit] = React.useState<Unit>(Unit.METRIC)
     const [weight, setWeight] = React.useState<string>("");
@@ -27,6 +28,13 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
     const [waist, setWaist] = React.useState<string>("");
     const [neck, setNeck] = React.useState<string>("");
     const [hip, setHip] = React.useState<string>("");
+    const [arm, setArm] = React.useState<string>("");
+    const [shoulder, setShoulder] = React.useState<string>("");
+    const [chest, setChest] = React.useState<string>("");
+    const [thigh, setThigh] = React.useState<string>("");
+    const [calf, setCalf] = React.useState<string>("");
+    const [forearm, setForearm] = React.useState<string>("");
+    const [bust, setBust] = React.useState<string>("");
     const [visible, setVisible] = React.useState(false);
     const [errInfo, setErrInfo] = React.useState<string>();
     const {nutritionInfo} = route.params
@@ -34,6 +42,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
     const userInfo = useSelector<IStore, JWTResponse | undefined>(state => state.user.jwtResponse)
 
     const showDatePicker = () => {
+        console.log(dateFormat(dateOfInfo, "dd-mm-yy").toString())
         setDatePickerVisibility(true);
     };
 
@@ -57,6 +66,14 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
               setWaist(nutritionInfo.waist);
               setHip(nutritionInfo.hip);
               setNeck(nutritionInfo.neck);
+              setArm(nutritionInfo.arm);
+              setThigh(nutritionInfo.thigh);
+              setChest(nutritionInfo.chest);
+              setShoulder(nutritionInfo.shoulder);
+              setThigh(nutritionInfo.thigh);
+              setForearm(nutritionInfo.forearm);
+              setBust(nutritionInfo.bust);
+              setCalf(nutritionInfo.calf);
           }
       },
       []);
@@ -76,6 +93,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
             }
         }
         let userInfo: UserNutritionInfo = {
+            bust: 0, calf: 0, forearm: 0,
             dateOfInfo: dateOfInfo,
             fatPercentage: parseFloat(fatPercentage),
             height: parseFloat(height),
@@ -83,9 +101,13 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
             musclePercentage: parseFloat(musclePercentage),
             neck: parseFloat(neck),
             sex: sex,
-            unit: "",
+            unit: unit,
+            weight: parseFloat(weight),
             waist: parseFloat(waist),
-            weight: 0
+            arm: 0,
+            chest: 0,
+            thigh: 0,
+            shoulder: 0
         }
         let bodyFat = calculateFatPercentage(userInfo)
         setFatPercentage(bodyFat.toString);
@@ -103,9 +125,16 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
             musclePercentage: parseFloat(musclePercentage),
             neck: parseFloat(neck),
             sex: sex,
-            unit: "",
+            unit: unit,
             waist: parseFloat(waist),
-            weight: 0
+            weight: parseFloat(weight),
+            arm: parseFloat(arm),
+            chest: parseFloat(chest),
+            thigh: parseFloat(thigh),
+            shoulder: parseFloat(shoulder),
+            bust: parseFloat(bust),
+            calf: parseFloat(calf),
+            forearm: parseFloat(forearm),
         }
         if (nutritionInfo) {
             newInfo.id = nutritionInfo.id;
@@ -146,7 +175,6 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                               {dateFormat(dateOfInfo, "dd-mm-yy").toString()}
                           </Text>
                           <DateTimePickerModal
-                            style={styles.datePickerModalStyle}
                             isVisible={isDatePickerVisible}
                             mode="date"
                             onConfirm={handleConfirm}
@@ -160,22 +188,22 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                       <Text style={styles.fieldText}>Sex</Text>
                       <DropDownPicker
                         items={[
-                            {label: 'MALE', value: 'MALE', hidden: true},
-                            {label: 'FEMALE', value: 'FEMALE'}
+                            {label: 'MALE', value: Sex.MALE, hidden: true},
+                            {label: 'FEMALE', value: Sex.FEMALE}
                         ]}
                         defaultValue={sex}
                         containerStyle={{height: 40}}
                         style={styles.textInput}
                         itemStyle={{justifyContent: 'flex-start'}}
-                        dropDownStyle={{backgroundColor: '#fafafa'}}
+                        dropDownStyle={styles.dropDownStyle}
                         onChangeItem={setSex}/>
                   </View>
                   <View style={styles.twoInputContainer}>
                       <Text style={styles.fieldText}>Unit</Text>
                       <DropDownPicker
                         items={[
-                            {label: 'METRIC (gram,meter)', value: 'METRIC', hidden: true},
-                            {label: 'IMPERIAL (pound,inch)', value: 'IMPERIAL'}
+                            {label: 'METRIC (gram,meter)', value: Unit.METRIC, hidden: true},
+                            {label: 'IMPERIAL (pound,inch)', value: Unit.IMPERIAL}
                         ]}
                         defaultValue={unit}
                         containerStyle={{height: 40}}
@@ -283,27 +311,35 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10
     },
+    dropDownStyle: {
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 10,
+        marginRight: 20,
+        backgroundColor: '#fafafa'
+    },
     dateStyle: {
         marginLeft: 10,
         marginRight: 10,
-        flex: 2,
         marginTop: 5,
         marginBottom: 5,
         backgroundColor: '#fff',
         justifyContent: "center",
     },
     dateString: {
+        backgroundColor: '#fff',
+        marginBottom: 5,
+        marginLeft: 8,
+        marginRight: 8,
         textAlign: "center",
     },
     nameField: {
         textAlign: "center"
-
     },
     fieldText: {
         color: '#000',
         fontSize: 12,
-        marginTop: 5,
-        marginBottom: 5,
+        marginTop: 8,
         marginLeft: 8,
         marginRight: 8,
         textAlign: "center"
@@ -319,10 +355,5 @@ const styles = StyleSheet.create({
     saveButton: {
         backgroundColor: '#000'
     },
-    datePickerModalStyle: {
-        backgroundColor:'#fff'
-    }
-
-
 });
 export default AddNutritionInfoScreen;
