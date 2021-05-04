@@ -2,24 +2,22 @@ import React, {useEffect} from 'react';
 import {StyleSheet, View} from "react-native";
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import {Button, Dialog, Paragraph, Portal, Text, TextInput} from 'react-native-paper';
-import DropDownPicker from 'react-native-dropdown-picker';
 import {UserNutritionInfo} from "../../../types/nutrition/UserNutritionInfo";
-import {Sex} from "../../../types/enum/Sex";
 import {calculateFatPercentage} from "./nutritionStackUtil";
 import {UserNutritionInfoNetwork} from "../../../repository/nutrition/nutrition";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {setLatestUserNutritionInfo, setUserNutritionInfoList} from "../../../redux/nutrition/nutrition";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import dateFormat from "dateformat";
 import {Unit} from "../../../types/enum/Unit";
-import {IStore} from "../../../redux";
 import {JWTResponse} from "../../../types/auth/JWTResponse";
+import {Gender} from "../../../types/enum/Gender";
+import {getUser} from "../../../repository/AuthHelper";
 
 
 const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: any; }) => {
     const dispatch = useDispatch();
     const [dateOfInfo, setDateOfInfo] = React.useState<Date>(new Date());
-    const [sex, setSex] = React.useState<Sex>(Sex.MALE);
     const [unit, setUnit] = React.useState<Unit>(Unit.METRIC)
     const [weight, setWeight] = React.useState<string>("");
     const [height, setHeight] = React.useState<string>("");
@@ -39,26 +37,14 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
     const [errInfo, setErrInfo] = React.useState<string>();
     const {nutritionInfo} = route.params
     const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
-    const userInfo = useSelector<IStore, JWTResponse | undefined>(state => state.user.jwtResponse)
-
-    const showDatePicker = () => {
-        console.log(dateFormat(dateOfInfo, "dd-mm-yy").toString())
-        setDatePickerVisibility(true);
-    };
-
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-    };
-
-    const handleConfirm = (date: Date) => {
-        console.warn("A date has been picked: ", date);
-        setDateOfInfo(date);
-        hideDatePicker();
-    };
+    const [gender, setGender] = React.useState<Gender>(Gender.MALE);
+    let userInfo: JWTResponse = {} as JWTResponse;
 
     useEffect(() => {
+          getUser().then(info => {
+              userInfo = info;
+          });
           if (nutritionInfo) {
-              setSex(nutritionInfo.sex);
               setWeight(nutritionInfo.weight);
               setHeight(nutritionInfo.height);
               setMusclePercentage(nutritionInfo.musclePercentage);
@@ -75,11 +61,13 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
               setBust(nutritionInfo.bust);
               setCalf(nutritionInfo.calf);
           }
+          setGender(userInfo.gender);
+          setUnit(userInfo.unit)
       },
       []);
 
     function onCalculateButtonPressed() {
-        if (sex && sex === 'MALE') {
+        if (userInfo.gender === 'MALE') {
             if (waist && waist === '0' && hip && hip === '0') {
                 setErrInfo('Waist and hip information must be given fore male and cannot be  0')
                 showDialog()
@@ -92,7 +80,9 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                 return;
             }
         }
-        let userInfo: UserNutritionInfo = {
+
+        let userInfoToCalculate: UserNutritionInfo = {
+            gender: gender,
             bust: 0, calf: 0, forearm: 0,
             dateOfInfo: dateOfInfo,
             fatPercentage: parseFloat(fatPercentage),
@@ -100,7 +90,6 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
             hip: parseFloat(hip),
             musclePercentage: parseFloat(musclePercentage),
             neck: parseFloat(neck),
-            sex: sex,
             unit: unit,
             weight: parseFloat(weight),
             waist: parseFloat(waist),
@@ -109,10 +98,24 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
             thigh: 0,
             shoulder: 0
         }
-        let bodyFat = calculateFatPercentage(userInfo)
+        let bodyFat = calculateFatPercentage(userInfoToCalculate)
         setFatPercentage(bodyFat.toString);
     }
 
+    const showDatePicker = () => {
+        console.log(dateFormat(dateOfInfo, "dd-mm-yy").toString())
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date: Date) => {
+        console.warn("A date has been picked: ", date);
+        setDateOfInfo(date);
+        hideDatePicker();
+    };
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
 
@@ -124,7 +127,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
             hip: parseFloat(hip),
             musclePercentage: parseFloat(musclePercentage),
             neck: parseFloat(neck),
-            sex: sex,
+            gender: gender,
             unit: unit,
             waist: parseFloat(waist),
             weight: parseFloat(weight),
@@ -183,36 +186,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                       </TouchableOpacity>
                   </View>
               </View>
-              <View style={styles.childContainer}>
-                  <View style={styles.twoInputContainer}>
-                      <Text style={styles.fieldText}>Sex</Text>
-                      <DropDownPicker
-                        items={[
-                            {label: 'MALE', value: Sex.MALE, hidden: true},
-                            {label: 'FEMALE', value: Sex.FEMALE}
-                        ]}
-                        defaultValue={sex}
-                        containerStyle={{height: 40}}
-                        style={styles.textInput}
-                        itemStyle={{justifyContent: 'flex-start'}}
-                        dropDownStyle={styles.dropDownStyle}
-                        onChangeItem={setSex}/>
-                  </View>
-                  <View style={styles.twoInputContainer}>
-                      <Text style={styles.fieldText}>Unit</Text>
-                      <DropDownPicker
-                        items={[
-                            {label: 'METRIC (gram,meter)', value: Unit.METRIC, hidden: true},
-                            {label: 'IMPERIAL (pound,inch)', value: Unit.IMPERIAL}
-                        ]}
-                        defaultValue={unit}
-                        containerStyle={{height: 40}}
-                        style={styles.textInput}
-                        itemStyle={{justifyContent: 'flex-start'}}
-                        dropDownStyle={{backgroundColor: '#fafafa'}}
-                        onChangeItem={setUnit}/>
-                  </View>
-              </View>
+
               <View style={styles.childContainer}>
                   <View style={styles.twoInputContainer}>
                       <Text style={styles.fieldText}>Weight</Text>
@@ -222,7 +196,10 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         selectionColor={'#578'}
                         underlineColor={'#861'}
                         style={styles.textInput}
-                        onChangeText={(text) => setWeight(text)}
+                        onChangeText={setWeight}
+                        right={(
+                          <Text>cm</Text>
+                        )}
                         value={weight}/>
                   </View>
                   <View style={styles.twoInputContainer}>
@@ -237,14 +214,35 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
               </View>
               <View style={styles.childContainer}>
                   <View style={styles.threeInputContainer}>
-                      <Text style={styles.fieldText}>Waist</Text>
+                      <Text style={styles.fieldText}>Shoulder</Text>
                       <TextInput
                         keyboardType={'number-pad'}
                         mode={'outlined'}
                         style={styles.textInput}
-                        onChangeText={setWaist}
+                        onChangeText={setShoulder}
                         value={waist}/>
                   </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Arm</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setArm}
+                        value={hip}/>
+                  </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Chest</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setChest}
+                        value={waist}/>
+                  </View>
+              </View>
+              <View style={styles.childContainer}>
+
                   <View style={styles.threeInputContainer}>
                       <Text style={styles.fieldText}>Hip</Text>
                       <TextInput
@@ -255,12 +253,64 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         value={hip}/>
                   </View>
                   <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Waist</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setWaist}
+                        value={waist}/>
+                  </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Thighs</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setThigh}
+
+                        value={neck}/>
+                  </View>
+              </View>
+              <View style={styles.childContainer}>
+
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Calf</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setCalf}
+                        value={hip}/>
+                  </View>
+                  <View style={styles.threeInputContainer}>
                       <Text style={styles.fieldText}>neck</Text>
                       <TextInput
                         keyboardType={'number-pad'}
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setNeck}
+
+                        value={neck}/>
+                  </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Forearm</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setForearm}
+
+                        value={neck}/>
+                  </View>
+                  <View style={styles.threeInputContainer}>
+                      <Text style={styles.fieldText}>Bust</Text>
+                      <TextInput
+                        keyboardType={'number-pad'}
+                        mode={'outlined'}
+                        style={styles.textInput}
+                        onChangeText={setBust}
+
                         value={neck}/>
                   </View>
               </View>
@@ -302,20 +352,38 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     twoInputContainer: {
-        flex: 2
+        flex: 2,
+        borderTopWidth: 0.2,
+        borderBottomWidth: 0.2,
+        borderLeftWidth: 0.2,
+        borderRightWidth: 0.2,
     },
     threeInputContainer: {
-        flex: 2
+        flex: 2,
+        borderTopWidth: 0.2,
+        borderBottomWidth: 0.2,
+        borderLeftWidth: 0.2,
+        borderRightWidth: 0.2,
+    },
+    fourInputContainer: {
+        flex: 3,
+        borderTopWidth: 0.2,
+        borderBottomWidth: 0.2,
+        borderLeftWidth: 0.2,
+        borderRightWidth: 0.2,
     },
     textInput: {
         marginLeft: 10,
-        marginRight: 10
+        marginRight: 10,
+        height: 30,
+        marginBottom: 5,
+
     },
     dropDownStyle: {
-        marginTop: 5,
+        marginTop: 0.2,
         marginBottom: 5,
-        marginLeft: 10,
-        marginRight: 20,
+        marginLeft: 5,
+        marginRight: 10,
         backgroundColor: '#fafafa'
     },
     dateStyle: {

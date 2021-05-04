@@ -1,10 +1,9 @@
-import {Sex} from "../enum/Sex";
 import {Unit} from "../enum/Unit";
+import {Gender} from "../enum/Gender";
 
 export interface UserNutritionInfo {
     id?: string,
-    sex: Sex,
-
+    gender: Gender,
     createdAt?: Date,
     dateOfInfo: Date,
     createdBy?: string,

@@ -1,3 +1,6 @@
+import {Gender} from "../enum/Gender";
+import {Unit} from "../enum/Unit";
+
 export interface JWTResponse {
   accessToken: string,
   type: string,
@@ -5,5 +8,7 @@ export interface JWTResponse {
   email: string,
   name: string,
   surname: string,
+  gender: Gender,
+  unit: Unit
   roles: string[]
 }

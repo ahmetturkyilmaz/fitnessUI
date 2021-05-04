@@ -1,5 +1,5 @@
 import {UserNutritionInfo} from "../../../types/nutrition/UserNutritionInfo";
-import {Sex} from "../../../types/enum/Sex";
+import { Gender } from "../../../types/enum/Gender";
 
 export const calculateFatPercentage = (userNutritionInfo: UserNutritionInfo) => {
     let userInfo = {...userNutritionInfo}
@@ -8,14 +8,14 @@ export const calculateFatPercentage = (userNutritionInfo: UserNutritionInfo) => 
     let neck = userInfo.neck;
     let height = userInfo.height;
 
-    if (userInfo.sex === Sex.MALE) {
+    if (userInfo.gender === Gender.MALE) {
         if (userInfo.unit === 'METRIC') {
             bodyFat = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
         } else {
             bodyFat = 86.01 * (Math.log10(waist - neck) - 70.41 * Math.log10(height)) + 36.76;
         }
     }
-    if (userInfo.sex === Sex.FEMALE) {
+    if (userInfo.gender === Gender.FEMALE) {
         let hip = userInfo.hip;
         if (userInfo.unit === 'METRIC') {
             bodyFat = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450;
