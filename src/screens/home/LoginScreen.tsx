@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
-import {Button, TextInput} from 'react-native-paper';
+import {Button, Dialog, Paragraph, Portal, TextInput} from 'react-native-paper';
 // @ts-ignore
 import logo from '../../assets/images/logo.png';
 import {LoginRequest} from '../../types/auth/LoginRequest';
@@ -10,9 +10,12 @@ import {useDispatch} from 'react-redux';
 import {setToken, setUser} from '../../redux/user/user';
 import {setLoading} from '../../redux/core/core';
 
+
 const LoginScreen = ({navigation}: { navigation: any }) => {
     const [email, setEmail] = React.useState<string>('');
     const [password, setPassword] = React.useState<string>('');
+    const [errStr, setErrStr] = useState('Unit');
+    const [visible, setVisible] = React.useState(false);
     const dispatch = useDispatch();
 
     const onPressLoginButton = () => {
@@ -20,16 +23,37 @@ const LoginScreen = ({navigation}: { navigation: any }) => {
         const authContext: LoginRequest = {email: email, password: password};
         getAuth(authContext).then((response) => {
             console.log("authresponse: ", response)
+            console.log("unit: ", response.unit)
+            console.log("gender: ", response.gender)
             dispatch(setUser(response))
             dispatch(setToken(response.accessToken));
             dispatch(setLoading(false));
             storeAccessToken(response.accessToken);
             storeUser(response);
+        }).catch(reason => {
+            console.log(reason);
+            setErrStr(reason);
+            showDialog()
         });
     };
+    const showDialog = () => setVisible(true);
 
+    const hideDialog = () => setVisible(false);
     return (
       <View style={styles.container}>
+          <View>
+              <Portal>
+                  <Dialog visible={visible} onDismiss={hideDialog}>
+                      <Dialog.Title>Alert</Dialog.Title>
+                      <Dialog.Content>
+                          <Paragraph>{errStr}</Paragraph>
+                      </Dialog.Content>
+                      <Dialog.Actions>
+                          <Button onPress={hideDialog}>Done</Button>
+                      </Dialog.Actions>
+                  </Dialog>
+              </Portal>
+          </View>
           <View style={styles.header}>
               <Image style={styles.logo} source={logo} resizeMode="cover"/>
           </View>

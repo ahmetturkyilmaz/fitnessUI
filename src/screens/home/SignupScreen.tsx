@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
-import {Button, TextInput, Title} from 'react-native-paper';
+import {Button, Dialog, Paragraph, Portal, TextInput, Title} from 'react-native-paper';
 import {SignupRequest} from '../../types/auth/SignupRequest';
 import {postAuth} from '../../repository/auth/user';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,6 +9,8 @@ import {IStore} from '../../redux';
 import {Gender} from "../../types/enum/Gender";
 import {Unit} from "../../types/enum/Unit";
 import DropDownPicker from 'react-native-dropdown-picker';
+import {ValidationUtil} from "../../util/ValidationUtil";
+
 
 const SignUpScreen = ({route, navigation}: { route: any; navigation: any }) => {
     const [email, setEmail] = useState<string>();
@@ -19,7 +21,10 @@ const SignUpScreen = ({route, navigation}: { route: any; navigation: any }) => {
     const [unit, setUnit] = React.useState<Unit>()
     const [openGenderDropdown, setOpenGenderDropdown] = useState(false);
     const [openUnitDropdown, setOpenUnitDropdown] = useState(false);
-    const [value, setValue] = useState('Unit');
+    const [errStr, setErrStr] = useState('Unit');
+
+    const [visible, setVisible] = React.useState(false);
+
     const dispatch = useDispatch();
     const loading = useSelector<IStore>((state) => state.core.loading);
     const onPressSignUpButton = () => {
@@ -32,6 +37,12 @@ const SignUpScreen = ({route, navigation}: { route: any; navigation: any }) => {
             unit: unit
         };
         console.log(authContext)
+        let errStr = ValidationUtil.validateFields(authContext);
+        if (errStr) {
+            setErrStr(errStr)
+            showDialog()
+            return;
+        }
         dispatch(setLoading(true));
         postAuth(authContext).then((response) => {
             dispatch(setLoading(false));
@@ -47,9 +58,24 @@ const SignUpScreen = ({route, navigation}: { route: any; navigation: any }) => {
         setOpenGenderDropdown(false)
     }
 
+    const showDialog = () => setVisible(true);
+
+    const hideDialog = () => setVisible(false);
+
     return (
       <SafeAreaView style={styles.container}>
           <ScrollView style={styles.content}>
+              <Portal>
+                  <Dialog visible={visible} onDismiss={hideDialog}>
+                      <Dialog.Title>Alert</Dialog.Title>
+                      <Dialog.Content>
+                          <Paragraph>{errStr}</Paragraph>
+                      </Dialog.Content>
+                      <Dialog.Actions>
+                          <Button onPress={hideDialog}>Done</Button>
+                      </Dialog.Actions>
+                  </Dialog>
+              </Portal>
               <Title>Sign Up</Title>
               <TextInput
                 placeholder="Email"
