@@ -1,9 +1,18 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {Dimensions, View} from "react-native";
 import {LineChart} from "react-native-chart-kit";
 
-const UserNutritionCompareScreen = () => {
-    const data = {
+const UserNutritionCompareScreen = ({route, navigation,}: { route: any; navigation: any; }) => {
+    useEffect(() => {
+
+        const {fieldData} = route.params.fieldData;
+        console.log("fieldInfo", fieldData)
+
+        //  setFieldInfo(fieldInfo);
+
+    }, []);
+
+   const data = {
         labels: ["January", "February", "March", "April", "May", "June"],
         datasets: [
             {
@@ -14,6 +23,7 @@ const UserNutritionCompareScreen = () => {
         ],
         legend: ["Rainy Days"] // optional
     };
+
     return (
       <View>
           <LineChart

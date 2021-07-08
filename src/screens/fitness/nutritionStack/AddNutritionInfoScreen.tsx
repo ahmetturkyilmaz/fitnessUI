@@ -3,16 +3,17 @@ import {StyleSheet, View} from "react-native";
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import {Button, Dialog, Paragraph, Portal, Text, TextInput} from 'react-native-paper';
 import {UserNutritionInfo} from "../../../types/nutrition/UserNutritionInfo";
-import {calculateFatPercentage} from "./nutritionStackUtil";
+import {calculateFatPercentage, calculateLeanBodyMass} from "./nutritionStackUtil";
 import {UserNutritionInfoNetwork} from "../../../repository/nutrition/nutrition";
-import {useDispatch} from "react-redux";
-import {setLatestUserNutritionInfo, setUserNutritionInfoList} from "../../../redux/nutrition/nutrition";
+import {useDispatch, useSelector} from "react-redux";
+import {setLatestUserNutritionInfo} from "../../../redux/nutrition/nutrition";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import dateFormat from "dateformat";
 import {Unit} from "../../../types/enum/Unit";
-import {JWTResponse} from "../../../types/auth/JWTResponse";
 import {Gender} from "../../../types/enum/Gender";
 import {getUser} from "../../../repository/AuthHelper";
+import {JWTResponse} from "../../../types/auth/JWTResponse";
+import {IStore} from "../../../redux";
 
 
 const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: any; }) => {
@@ -38,11 +39,16 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
     const {nutritionInfo} = route.params
     const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
     const [gender, setGender] = React.useState<Gender>(Gender.MALE);
-    let userInfo: JWTResponse = {} as JWTResponse;
+    const [name, setName] = React.useState<string>();
+    const latestNutritionInfo = useSelector<IStore, UserNutritionInfo | undefined>((state) => state.nutrition.latestNutritionInfo);
 
     useEffect(() => {
+          let userInfo: JWTResponse;
           getUser().then(info => {
-              userInfo = info;
+              console.log("userInfo", info);
+              setName(info.name + " " + info.surname)
+              setGender(info.gender);
+              setUnit(info.unit)
           });
           if (nutritionInfo) {
               setWeight(nutritionInfo.weight);
@@ -61,65 +67,51 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
               setBust(nutritionInfo.bust);
               setCalf(nutritionInfo.calf);
           }
-          setGender(userInfo.gender);
-          setUnit(userInfo.unit)
       },
       []);
 
     function onCalculateButtonPressed() {
-        if (userInfo.gender === 'MALE') {
-            if (waist && waist === '0' && hip && hip === '0') {
-                setErrInfo('Waist and hip information must be given fore male and cannot be  0')
+        if (gender === 'MALE') {
+            if (waist && waist === '0' && neck && neck === '0') {
+                setErrInfo('Height,  waist and hip information must be given fore male and cannot be  0')
                 showDialog()
                 return;
             }
         } else {
             if (waist && waist === '0' && hip && hip === '0' && neck && neck === '0') {
-                setErrInfo('Waist, hip and neck information must be given for female and cannot be 0')
+                setErrInfo('Height, waist, hip and neck information must be given for female and cannot be 0')
                 showDialog()
                 return;
             }
         }
+        let userInfoToCalculate = defineNewInfo();
 
-        let userInfoToCalculate: UserNutritionInfo = {
-            gender: gender,
-            bust: 0, calf: 0, forearm: 0,
-            dateOfInfo: dateOfInfo,
-            fatPercentage: parseFloat(fatPercentage),
-            height: parseFloat(height),
-            hip: parseFloat(hip),
-            musclePercentage: parseFloat(musclePercentage),
-            neck: parseFloat(neck),
-            unit: unit,
-            weight: parseFloat(weight),
-            waist: parseFloat(waist),
-            arm: 0,
-            chest: 0,
-            thigh: 0,
-            shoulder: 0
-        }
         let bodyFat = calculateFatPercentage(userInfoToCalculate)
-        setFatPercentage(bodyFat.toString);
+        let lbm = calculateLeanBodyMass(parseFloat(weight), bodyFat);
+        setFatPercentage((-1 * bodyFat).toFixed(2).toString());
+        setMusclePercentage(lbm.toFixed(2).toString());
     }
 
-    const showDatePicker = () => {
-        console.log(dateFormat(dateOfInfo, "dd-mm-yy").toString())
-        setDatePickerVisibility(true);
-    };
-
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-    };
-
-    const handleConfirm = (date: Date) => {
-        console.warn("A date has been picked: ", date);
-        setDateOfInfo(date);
-        hideDatePicker();
-    };
-    const showDialog = () => setVisible(true);
-    const hideDialog = () => setVisible(false);
-
     const onPressSaveButton = () => {
+        let newInfo = defineNewInfo();
+        if (nutritionInfo) {
+            newInfo.id = nutritionInfo.id;
+            newInfo.createdAt = nutritionInfo.createdAt
+            newInfo.createdBy = nutritionInfo.createdBy
+            UserNutritionInfoNetwork.put(newInfo).then(r => {
+                navigation.goBack();
+            })
+        } else {
+            UserNutritionInfoNetwork.post(newInfo).then(r => {
+                dispatch(setLatestUserNutritionInfo(r))
+                console.log("respond", r)
+                navigation.goBack();
+                navigation.params.userNutritionInfoRespond();
+            });
+        }
+    }
+
+    const defineNewInfo = () => {
         let newInfo: UserNutritionInfo = {
             dateOfInfo: dateOfInfo,
             fatPercentage: parseFloat(fatPercentage),
@@ -139,19 +131,20 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
             calf: parseFloat(calf),
             forearm: parseFloat(forearm),
         }
-        if (nutritionInfo) {
-            newInfo.id = nutritionInfo.id;
-            newInfo.createdAt = nutritionInfo.createdAt
-            newInfo.createdBy = nutritionInfo.createdBy
-            UserNutritionInfoNetwork.put(newInfo).then(r => {
-                UserNutritionInfoNetwork.getAll().then(newInfos => dispatch(setUserNutritionInfoList(newInfos)));
-            })
-        } else {
-            UserNutritionInfoNetwork.post(newInfo).then(r => dispatch(setLatestUserNutritionInfo(r)));
-        }
-        navigation.goBack();
+        return newInfo;
     }
-
+    const showDialog = () => setVisible(true);
+    const hideDialog = () => setVisible(false);
+    const showDatePicker = () => {
+        console.log(dateFormat(dateOfInfo, "dd-mm-yy").toString())
+        setDatePickerVisibility(true);
+    };
+    const hideDatePicker = () => {setDatePickerVisibility(false);};
+    const handleConfirm = (date: Date) => {
+        console.warn("A date has been picked: ", date);
+        setDateOfInfo(date);
+        hideDatePicker();
+    };
     return (
       <View style={styles.container}>
           <Portal>
@@ -169,7 +162,9 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
           <View>
               <View style={styles.childContainer}>
                   <View style={styles.twoInputContainer}>
-                      <Text style={styles.nameField}>{userInfo?.name}</Text>
+                      <Text style={styles.nameField}>{name}</Text>
+                      <Text style={styles.nameField}>{gender}</Text>
+                      <Text style={styles.nameField}>{unit}</Text>
                   </View>
                   <View style={styles.twoInputContainer}>
                       <Text style={styles.fieldText}>Date</Text>
@@ -183,6 +178,22 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                             onConfirm={handleConfirm}
                             onCancel={hideDatePicker}
                           />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.dateStyle} onPress={showDatePicker}>
+                          <Text style={styles.dateString}>
+                              {dateFormat(dateOfInfo, "dd-mm-yy").toString()}
+                          </Text>
+                          <DateTimePickerModal
+                            isVisible={isDatePickerVisible}
+                            mode="date"
+                            onConfirm={handleConfirm}
+                            onCancel={hideDatePicker}
+                          />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.dateStyle} onPress={showDatePicker}>
+                          <Text style={styles.dateString}>
+                              {dateFormat(dateOfInfo, "dd-mm-yy").toString()}
+                          </Text>
                       </TouchableOpacity>
                   </View>
               </View>
@@ -220,7 +231,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setShoulder}
-                        value={waist}/>
+                        value={shoulder}/>
                   </View>
                   <View style={styles.threeInputContainer}>
                       <Text style={styles.fieldText}>Arm</Text>
@@ -229,7 +240,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setArm}
-                        value={hip}/>
+                        value={arm}/>
                   </View>
                   <View style={styles.threeInputContainer}>
                       <Text style={styles.fieldText}>Chest</Text>
@@ -238,7 +249,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setChest}
-                        value={waist}/>
+                        value={chest}/>
                   </View>
               </View>
               <View style={styles.childContainer}>
@@ -268,8 +279,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setThigh}
-
-                        value={neck}/>
+                        value={thigh}/>
                   </View>
               </View>
               <View style={styles.childContainer}>
@@ -281,16 +291,15 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setCalf}
-                        value={hip}/>
+                        value={calf}/>
                   </View>
                   <View style={styles.threeInputContainer}>
-                      <Text style={styles.fieldText}>neck</Text>
+                      <Text style={styles.fieldText}>Neck</Text>
                       <TextInput
                         keyboardType={'number-pad'}
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setNeck}
-
                         value={neck}/>
                   </View>
                   <View style={styles.threeInputContainer}>
@@ -300,8 +309,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setForearm}
-
-                        value={neck}/>
+                        value={forearm}/>
                   </View>
                   <View style={styles.threeInputContainer}>
                       <Text style={styles.fieldText}>Bust</Text>
@@ -310,8 +318,7 @@ const AddNutritionInfoScreen = ({route, navigation}: { route: any; navigation: a
                         mode={'outlined'}
                         style={styles.textInput}
                         onChangeText={setBust}
-
-                        value={neck}/>
+                        value={bust}/>
                   </View>
               </View>
               <View style={styles.childContainer}>
